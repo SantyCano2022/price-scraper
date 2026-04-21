@@ -40,3 +40,6 @@ htmlcov/
 
 # Playwright
 playwright/.auth/
+
+# Claude Code
+.claude/
