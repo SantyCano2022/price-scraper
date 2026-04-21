@@ -1,17 +1,25 @@
-# Price Scraper —  Alkosto
+# Price Scraper — Alkosto
 
-Scraper de precios automatizado que extrae productos de MercadoLibre Colombia y exporta los resultados a CSV. Proyecto de portafolio para ingeniería de software / automatizaciones.
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://price-scraper-for-alkosto.streamlit.app/)
+
+Scraper de precios automatizado que extrae productos de Alkosto Colombia, los visualiza en un dashboard interactivo y envía alertas por email cuando hay descuentos.
+
+## Demo
+
+**[https://price-scraper-for-alkosto.streamlit.app/](https://price-scraper-for-alkosto.streamlit.app/)**
 
 ## Arquitectura
 
 ```
 price-scraper/
 ├── src/
-│   ├── scraper.py      # Lógica de scraping (requests + BeautifulSoup)
-│   └── exporter.py     # Exportación a CSV con pandas
+│   ├── scraper.py      # Scraping vía Algolia API
+│   ├── dashboard.py    # Dashboard Streamlit
+│   ├── notifier.py     # Alertas por Gmail
+│   ├── scheduler.py    # Verificación periódica
+│   └── exporter.py     # Exportación a CSV
 ├── data/               # CSVs generados (ignorados por git)
 ├── tests/
-│   └── test_exporter.py
 ├── .env                # Variables de entorno (no subir a git)
 ├── requirements.txt
 ├── Dockerfile
@@ -22,56 +30,63 @@ price-scraper/
 
 | Herramienta | Uso |
 |---|---|
-| `requests` | HTTP requests al sitio |
-| `BeautifulSoup4` | Parsing del HTML |
-| `pandas` | Generación de CSV |
+| `requests` | HTTP requests a la API de Algolia |
+| `streamlit` | Dashboard interactivo |
+| `pandas` | Procesamiento de datos |
 | `python-dotenv` | Variables de entorno |
+| `apscheduler` | Scheduler de alertas |
 | `pytest` | Tests unitarios |
 | `Docker` | Empaquetado y despliegue |
 
 ## Instalación local
 
 ```bash
-# Clonar el repo
-git clone <repo-url>
+git clone https://github.com/SantyCano2022/price-scraper
 cd price-scraper
 
-# Crear y activar virtual environment
 python -m venv venv
 source venv/bin/activate        # Linux/Mac
 venv\Scripts\activate           # Windows
 
-# Instalar dependencias
 pip install -r requirements.txt
 ```
 
 ## Configuración
 
-Edita `.env` para ajustar parámetros:
+Edita `.env` para ajustar parámetros (todos opcionales, tienen valores por defecto):
 
 ```env
-SEARCH_QUERY=xxxxxxxx       # Qué buscar
-MAX_PAGES=xxxxxxx          # Páginas a scrapear
-REQUEST_DELAY=xxxxxxx           # Segundos entre requests
+SEARCH_QUERY=laptop           # Qué buscar (default: laptop)
+MAX_PAGES=5                   # Páginas a scrapear (default: 5)
+REQUEST_DELAY=0.5             # Segundos entre requests (default: 0.5)
+CHECK_INTERVAL_HOURS=6        # Frecuencia de alertas en horas (default: 6)
+MIN_DISCOUNT_PCT=30           # Descuento mínimo para alertar (default: 30%)
+
+# Gmail — notificaciones de descuentos
+GMAIL_USER=tu@gmail.com
+GMAIL_APP_PASSWORD=xxxx
+NOTIFY_EMAIL=destino@gmail.com
 ```
 
 ## Cómo correrlo
 
-### Local
+### Dashboard local
 
 ```bash
-python src/exporter.py
+streamlit run src/dashboard.py
 ```
 
-El CSV se guarda en `data/precios_YYYYMMDD_HHMMSS.csv`.
+### Scheduler de alertas
+
+```bash
+python src/scheduler.py
+```
 
 ### Con Docker
 
 ```bash
 docker-compose up --build
 ```
-
-Los CSVs se montan en `./data/` de tu máquina local.
 
 ## Tests
 
