@@ -100,9 +100,17 @@ div[data-testid="stSlider"] [data-baseweb="slider"] div[class*="InnerTrack"] {
 [data-baseweb="tag"] button svg { fill: #FF9A45 !important; }
 
 /* Checkbox — sin fondo en el label */
-div[data-testid="stCheckbox"] label {
+div[data-testid="stCheckbox"] label,
+div[data-testid="stCheckbox"] label *,
+div[data-testid="stCheckbox"] > label,
+[data-baseweb="checkbox"],
+[data-baseweb="checkbox"] > label,
+[data-baseweb="checkbox"] label,
+[data-baseweb="checkbox"] > div,
+[data-testid="stCheckbox"] span,
+[data-testid="stCheckbox"] p {
     background: transparent !important;
-    padding: 0 !important;
+    background-color: transparent !important;
 }
 div[data-testid="stCheckbox"] label span[aria-checked="true"] div,
 div[data-testid="stCheckbox"] [data-baseweb="checkbox"] [data-checked="true"] {
