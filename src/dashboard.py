@@ -402,41 +402,44 @@ top_disc = filtered[filtered.desc_pct > 0].nlargest(10, "desc_pct")
 if not top_disc.empty:
     max_d = top_disc.desc_pct.max()
     st.markdown(f"""<div class="sec"><span class="sec-title">🔥 Top descuentos activos</span><div class="sec-line"></div><span class="sec-count">{len(top_disc)} productos</span></div>""", unsafe_allow_html=True)
-    rows = ""
     for _, r in top_disc.iterrows():
         name = _html.escape(str(r["nombre"])[:65] + ("…" if len(str(r["nombre"])) > 65 else ""))
         w = int((r.desc_pct / max_d) * 100)
-        rows += f"""
+        st.markdown(f"""
         <div class="disc-row">
             <span class="disc-name">{name}</span>
             <div class="disc-track"><div class="disc-fill" style="width:{w}%"></div></div>
             <span class="disc-pct">-{r.desc_pct}%</span>
-        </div>"""
-    st.markdown(f'<div class="disc-list">{rows}</div>', unsafe_allow_html=True)
+        </div>""", unsafe_allow_html=True)
 
 # ── Product Cards ─────────────────────────────────────────────────────────────
 st.markdown("""<div class="sec" style="margin-top:28px"><span class="sec-title">⭐ Mejores ofertas</span><div class="sec-line"></div></div>""", unsafe_allow_html=True)
 
 highlights = filtered[filtered.desc_pct > 0].nlargest(6, "desc_pct") if (filtered.desc_pct > 0).any() else filtered.nsmallest(6, "precio_cop")
-cards = ""
-for i, (_, r) in enumerate(highlights.iterrows()):
-    old_h = f'<div class="prod-old">${r.get("precio_original_cop",0):,.0f}</div>' if r.get("precio_original_cop", 0) > r.precio_cop else ""
-    badge_h = f'<span class="badge">{_html.escape(str(r.get("descuento","")).strip())}</span>' if str(r.get("descuento","")).strip() else ""
-    rat = r.get("rating", 0)
-    rat_h = f'<div class="prod-rating">{"★"*round(rat)}{"☆"*(5-round(rat))} {rat:.1f}</div>' if rat and rat > 0 else ""
-    name_safe  = _html.escape(str(r.get("nombre","")))
-    brand_safe = _html.escape(str(r.get("marca","")).strip() or "—")
-    cards += f"""
-    <div class="prod-card" style="animation-delay:{i*0.06}s">
-        <div class="prod-rank">#{i+1}</div>
-        <div class="prod-brand">{brand_safe}</div>
-        <div class="prod-name">{name_safe}</div>
-        <div class="prod-bottom">
-            <div>{old_h}<div class="prod-price">${r.precio_cop:,.0f}</div></div>
-            {badge_h}
-        </div>
-        {rat_h}
-    </div>"""
+rows_list = list(highlights.iterrows())
+for row_start in range(0, len(rows_list), 3):
+    chunk = rows_list[row_start:row_start+3]
+    cols = st.columns(3)
+    for col_idx, (_, r) in enumerate(chunk):
+        i = row_start + col_idx
+        old_h    = f'<div class="prod-old">${r.get("precio_original_cop",0):,.0f}</div>' if r.get("precio_original_cop", 0) > r.precio_cop else ""
+        badge_h  = f'<span class="badge">{_html.escape(str(r.get("descuento","")).strip())}</span>' if str(r.get("descuento","")).strip() else ""
+        rat      = r.get("rating", 0)
+        rat_h    = f'<div class="prod-rating">{"★"*round(rat)}{"☆"*(5-round(rat))} {rat:.1f}</div>' if rat and rat > 0 else ""
+        name_s   = _html.escape(str(r.get("nombre","")))
+        brand_s  = _html.escape(str(r.get("marca","")).strip() or "—")
+        with cols[col_idx]:
+            st.markdown(f"""
+            <div class="prod-card">
+                <div class="prod-rank">#{i+1}</div>
+                <div class="prod-brand">{brand_s}</div>
+                <div class="prod-name">{name_s}</div>
+                <div class="prod-bottom">
+                    <div>{old_h}<div class="prod-price">${r.precio_cop:,.0f}</div></div>
+                    {badge_h}
+                </div>
+                {rat_h}
+            </div>""", unsafe_allow_html=True)
 st.markdown(f'<div class="prod-grid">{cards}</div>', unsafe_allow_html=True)
 
 # ── Table ─────────────────────────────────────────────────────────────────────
