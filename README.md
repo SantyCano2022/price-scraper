@@ -1,4 +1,4 @@
-# Price Scraper — MercadoLibre Colombia
+# Price Scraper — MercadoLibre Alkosto
 
 Scraper de precios automatizado que extrae productos de MercadoLibre Colombia y exporta los resultados a CSV. Proyecto de portafolio para ingeniería de software / automatizaciones.
 
