@@ -43,6 +43,13 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif !important; }
         radial-gradient(ellipse at 60% 80%, rgba(100,0,8,0.05) 0%, transparent 50%);
     color: #f0f0f0;
     position: relative;
+    isolation: isolate;
+}
+
+/* Ensure all main content stays above the background overlay */
+.main .block-container {
+    position: relative;
+    z-index: 1;
 }
 
 /* Grid lines background */
@@ -55,7 +62,7 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif !important; }
         linear-gradient(90deg, rgba(227,6,19,0.03) 1px, transparent 1px);
     background-size: 50px 50px;
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
     animation: gridPulse 8s ease-in-out infinite;
 }
 
