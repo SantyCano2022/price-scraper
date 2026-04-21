@@ -72,6 +72,44 @@ label, .stMarkdown p, .stMarkdown li { color: #c0c0cc !important; }
 /* Slider */
 div[data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] {
     background: #F47920 !important;
+    border-color: #F47920 !important;
+}
+div[data-testid="stSlider"] [data-baseweb="slider"] [data-testid="stTickBarMin"],
+div[data-testid="stSlider"] [data-baseweb="slider"] [data-testid="stTickBarMax"] {
+    color: #F47920 !important;
+}
+div[data-testid="stSlider"] [data-baseweb="slider"] div[class*="TrackHighlight"] {
+    background: #F47920 !important;
+}
+
+/* Multiselect tags */
+[data-baseweb="tag"] {
+    background: rgba(244,121,32,0.18) !important;
+    border: 1px solid rgba(244,121,32,0.45) !important;
+    color: #FF9A45 !important;
+    border-radius: 6px !important;
+}
+[data-baseweb="tag"] span { color: #FF9A45 !important; }
+[data-baseweb="tag"] [data-testid="stMultiSelectDeleteButton"] svg,
+[data-baseweb="tag"] button svg { fill: #FF9A45 !important; }
+
+/* Checkbox */
+div[data-testid="stCheckbox"] label span[aria-checked="true"] div,
+div[data-testid="stCheckbox"] [data-baseweb="checkbox"] [data-checked="true"] {
+    background: #F47920 !important;
+    border-color: #F47920 !important;
+}
+div[data-testid="stCheckbox"] input:checked + div {
+    background: #F47920 !important;
+    border-color: #F47920 !important;
+}
+[data-baseweb="checkbox"] [data-checked] {
+    border-color: rgba(244,121,32,0.4) !important;
+    outline-color: rgba(244,121,32,0.3) !important;
+}
+[data-baseweb="checkbox"] [data-checked="true"] {
+    background: #F47920 !important;
+    border-color: #F47920 !important;
 }
 
 /* Dataframe */
