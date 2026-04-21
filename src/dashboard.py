@@ -440,8 +440,6 @@ for row_start in range(0, len(rows_list), 3):
                 </div>
                 {rat_h}
             </div>""", unsafe_allow_html=True)
-st.markdown(f'<div class="prod-grid">{cards}</div>', unsafe_allow_html=True)
-
 # ── Table ─────────────────────────────────────────────────────────────────────
 st.markdown(f"""<div class="sec" style="margin-top:28px"><span class="sec-title">🗂️ Catálogo completo</span><div class="sec-line"></div><span class="sec-count">{total} resultados</span></div>""", unsafe_allow_html=True)
 
