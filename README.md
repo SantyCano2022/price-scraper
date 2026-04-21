@@ -50,9 +50,9 @@ pip install -r requirements.txt
 Edita `.env` para ajustar parámetros:
 
 ```env
-SEARCH_QUERY=laptop       # Qué buscar
-MAX_PAGES=3               # Páginas a scrapear
-REQUEST_DELAY=2           # Segundos entre requests
+SEARCH_QUERY=xxxxxxxx       # Qué buscar
+MAX_PAGES=xxxxxxx          # Páginas a scrapear
+REQUEST_DELAY=xxxxxxx           # Segundos entre requests
 ```
 
 ## Cómo correrlo
