@@ -271,7 +271,7 @@ hr { border-color: rgba(244,121,32,0.15) !important; }
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("### 🔎 Búsqueda")
-    query = st.text_input("Producto", value="laptop", placeholder="celular, televisor, nevera...")
+    query = st.text_input("Producto", value="", placeholder="celular, televisor, nevera...")
     max_pages = st.slider("Páginas", 1, 10, 3, help="~48 resultados por página")
     run_btn = st.button("⚡ Buscar ahora", use_container_width=True)
     st.markdown("---")
