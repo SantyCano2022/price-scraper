@@ -20,9 +20,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-SEARCH_QUERY = os.getenv("SEARCH_QUERY", "laptop")
-CHECK_INTERVAL_HOURS = int(os.getenv("CHECK_INTERVAL_HOURS", "6"))
-MIN_DISCOUNT_PCT = int(os.getenv("MIN_DISCOUNT_PCT", "30"))
+SEARCH_QUERY = os.getenv("SEARCH_QUERY") or "laptop"
+CHECK_INTERVAL_HOURS = int(os.getenv("CHECK_INTERVAL_HOURS") or "6")
+MIN_DISCOUNT_PCT = int(os.getenv("MIN_DISCOUNT_PCT") or "30")
 
 
 def parse_discount(discount_str: str) -> int:

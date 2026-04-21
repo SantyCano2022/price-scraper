@@ -17,9 +17,9 @@ ALGOLIA_API_KEY = "7a8800d62203ee3a9ff1cdf74f99b268"
 ALGOLIA_INDEX = "alkostoIndexAlgoliaPRD"
 ALKOSTO_BASE_URL = "https://www.alkosto.com"
 
-SEARCH_QUERY = os.getenv("SEARCH_QUERY", "laptop")
-REQUEST_DELAY = float(os.getenv("REQUEST_DELAY", "0.5"))
-MAX_PAGES = int(os.getenv("MAX_PAGES", "5"))
+SEARCH_QUERY = os.getenv("SEARCH_QUERY") or "laptop"
+REQUEST_DELAY = float(os.getenv("REQUEST_DELAY") or "0.5")
+MAX_PAGES = int(os.getenv("MAX_PAGES") or "5")
 RESULTS_PER_PAGE = 48
 
 ALGOLIA_URL = f"https://{ALGOLIA_APP_ID}-dsn.algolia.net/1/indexes/{ALGOLIA_INDEX}/query"
