@@ -1,6 +1,7 @@
 import sys
 import io
 import time
+import html as _html
 from pathlib import Path
 from datetime import datetime
 
@@ -403,7 +404,7 @@ if not top_disc.empty:
     st.markdown(f"""<div class="sec"><span class="sec-title">🔥 Top descuentos activos</span><div class="sec-line"></div><span class="sec-count">{len(top_disc)} productos</span></div>""", unsafe_allow_html=True)
     rows = ""
     for _, r in top_disc.iterrows():
-        name = str(r["nombre"])[:65] + ("…" if len(str(r["nombre"])) > 65 else "")
+        name = _html.escape(str(r["nombre"])[:65] + ("…" if len(str(r["nombre"])) > 65 else ""))
         w = int((r.desc_pct / max_d) * 100)
         rows += f"""
         <div class="disc-row">
@@ -420,14 +421,16 @@ highlights = filtered[filtered.desc_pct > 0].nlargest(6, "desc_pct") if (filtere
 cards = ""
 for i, (_, r) in enumerate(highlights.iterrows()):
     old_h = f'<div class="prod-old">${r.get("precio_original_cop",0):,.0f}</div>' if r.get("precio_original_cop", 0) > r.precio_cop else ""
-    badge_h = f'<span class="badge">{r.get("descuento","")}</span>' if str(r.get("descuento","")).strip() else ""
+    badge_h = f'<span class="badge">{_html.escape(str(r.get("descuento","")).strip())}</span>' if str(r.get("descuento","")).strip() else ""
     rat = r.get("rating", 0)
     rat_h = f'<div class="prod-rating">{"★"*round(rat)}{"☆"*(5-round(rat))} {rat:.1f}</div>' if rat and rat > 0 else ""
+    name_safe  = _html.escape(str(r.get("nombre","")))
+    brand_safe = _html.escape(str(r.get("marca","")).strip() or "—")
     cards += f"""
     <div class="prod-card" style="animation-delay:{i*0.06}s">
         <div class="prod-rank">#{i+1}</div>
-        <div class="prod-brand">{str(r.get("marca","")).strip() or "—"}</div>
-        <div class="prod-name">{r.get("nombre","")}</div>
+        <div class="prod-brand">{brand_safe}</div>
+        <div class="prod-name">{name_safe}</div>
         <div class="prod-bottom">
             <div>{old_h}<div class="prod-price">${r.precio_cop:,.0f}</div></div>
             {badge_h}
