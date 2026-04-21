@@ -99,20 +99,20 @@ div[data-testid="stSlider"] [data-baseweb="slider"] div[class*="InnerTrack"] {
 [data-baseweb="tag"] [data-testid="stMultiSelectDeleteButton"] svg,
 [data-baseweb="tag"] button svg { fill: #FF9A45 !important; }
 
-/* Checkbox — SOLO el cuadrito, sin fondo en ningún estado */
-[data-testid="stCheckbox"] *:not(svg):not(path):not([class*="check"]) {
-    background: transparent !important;
-    background-color: transparent !important;
+/* Checkbox — sin fondo en el label, chulito naranja visible */
+[data-testid="stCheckbox"] { background: transparent !important; }
+[data-testid="stCheckbox"] label { background: transparent !important; }
+[data-testid="stCheckbox"] label:hover { background: transparent !important; }
+[data-testid="stCheckbox"] p { background: transparent !important; }
+
+/* cuadrito naranja con chulito cuando está marcado */
+[data-baseweb="checkbox"] [data-checked="true"] {
+    background-color: #F47920 !important;
+    border-color: #F47920 !important;
 }
-[data-testid="stCheckbox"] label:hover,
-[data-testid="stCheckbox"] label:focus,
-[data-testid="stCheckbox"] label:active,
-[data-baseweb="checkbox"]:hover,
-[data-baseweb="checkbox"]:focus,
-[data-baseweb="checkbox"]:active,
-[data-baseweb="checkbox"] > label:hover {
-    background: transparent !important;
+[data-baseweb="checkbox"] [data-checked="false"] {
     background-color: transparent !important;
+    border-color: rgba(244,121,32,0.5) !important;
 }
 
 /* Dataframe */
