@@ -99,35 +99,20 @@ div[data-testid="stSlider"] [data-baseweb="slider"] div[class*="InnerTrack"] {
 [data-baseweb="tag"] [data-testid="stMultiSelectDeleteButton"] svg,
 [data-baseweb="tag"] button svg { fill: #FF9A45 !important; }
 
-/* Checkbox — sin fondo en el label */
-div[data-testid="stCheckbox"] label,
-div[data-testid="stCheckbox"] label *,
-div[data-testid="stCheckbox"] > label,
-[data-baseweb="checkbox"],
-[data-baseweb="checkbox"] > label,
-[data-baseweb="checkbox"] label,
-[data-baseweb="checkbox"] > div,
-[data-testid="stCheckbox"] span,
-[data-testid="stCheckbox"] p {
+/* Checkbox — SOLO el cuadrito, sin fondo en ningún estado */
+[data-testid="stCheckbox"] *:not(svg):not(path):not([class*="check"]) {
     background: transparent !important;
     background-color: transparent !important;
 }
-div[data-testid="stCheckbox"] label span[aria-checked="true"] div,
-div[data-testid="stCheckbox"] [data-baseweb="checkbox"] [data-checked="true"] {
-    background: #F47920 !important;
-    border-color: #F47920 !important;
-}
-div[data-testid="stCheckbox"] input:checked + div {
-    background: #F47920 !important;
-    border-color: #F47920 !important;
-}
-[data-baseweb="checkbox"] [data-checked] {
-    border-color: rgba(244,121,32,0.4) !important;
-    outline-color: rgba(244,121,32,0.3) !important;
-}
-[data-baseweb="checkbox"] [data-checked="true"] {
-    background: #F47920 !important;
-    border-color: #F47920 !important;
+[data-testid="stCheckbox"] label:hover,
+[data-testid="stCheckbox"] label:focus,
+[data-testid="stCheckbox"] label:active,
+[data-baseweb="checkbox"]:hover,
+[data-baseweb="checkbox"]:focus,
+[data-baseweb="checkbox"]:active,
+[data-baseweb="checkbox"] > label:hover {
+    background: transparent !important;
+    background-color: transparent !important;
 }
 
 /* Dataframe */
