@@ -81,6 +81,12 @@ div[data-testid="stSlider"] [data-baseweb="slider"] [data-testid="stTickBarMax"]
 div[data-testid="stSlider"] [data-baseweb="slider"] div[class*="TrackHighlight"] {
     background: #F47920 !important;
 }
+div[data-testid="stSlider"] [data-baseweb="slider"] div[class*="Track"] {
+    background: rgba(244,121,32,0.2) !important;
+}
+div[data-testid="stSlider"] [data-baseweb="slider"] div[class*="InnerTrack"] {
+    background: #F47920 !important;
+}
 
 /* Multiselect tags */
 [data-baseweb="tag"] {
@@ -93,7 +99,11 @@ div[data-testid="stSlider"] [data-baseweb="slider"] div[class*="TrackHighlight"]
 [data-baseweb="tag"] [data-testid="stMultiSelectDeleteButton"] svg,
 [data-baseweb="tag"] button svg { fill: #FF9A45 !important; }
 
-/* Checkbox */
+/* Checkbox — sin fondo en el label */
+div[data-testid="stCheckbox"] label {
+    background: transparent !important;
+    padding: 0 !important;
+}
 div[data-testid="stCheckbox"] label span[aria-checked="true"] div,
 div[data-testid="stCheckbox"] [data-baseweb="checkbox"] [data-checked="true"] {
     background: #F47920 !important;
