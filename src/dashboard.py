@@ -30,40 +30,40 @@ st.markdown("""
 
 html, body, [class*="css"] { font-family: 'Inter', sans-serif !important; }
 
-.stApp { background: #0a0a0f !important; }
+.stApp { background: #050505 !important; }
 
 section[data-testid="stSidebar"] {
-    background: #0d0d14 !important;
-    border-right: 1px solid rgba(227,6,19,0.2) !important;
+    background: #08080f !important;
+    border-right: 1px solid rgba(244,121,32,0.25) !important;
 }
 
 /* Botones */
 div[data-testid="stButton"] > button,
 .stDownloadButton > button {
-    background: linear-gradient(135deg, #E30613, #9b0010) !important;
+    background: linear-gradient(135deg, #F47920, #C85A00) !important;
     color: white !important;
     border: none !important;
     border-radius: 10px !important;
     font-weight: 700 !important;
-    box-shadow: 0 4px 20px rgba(227,6,19,0.35) !important;
+    box-shadow: 0 4px 20px rgba(244,121,32,0.35) !important;
     transition: all 0.25s ease !important;
 }
 div[data-testid="stButton"] > button:hover,
 .stDownloadButton > button:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 8px 28px rgba(227,6,19,0.55) !important;
+    box-shadow: 0 8px 28px rgba(244,121,32,0.55) !important;
 }
 
 /* Inputs */
 div[data-testid="stTextInput"] input {
-    background: #14141f !important;
-    border: 1px solid rgba(227,6,19,0.25) !important;
+    background: #0e0e18 !important;
+    border: 1px solid rgba(244,121,32,0.25) !important;
     border-radius: 8px !important;
     color: #f0f0f0 !important;
 }
 div[data-testid="stTextInput"] input:focus {
-    border-color: #E30613 !important;
-    box-shadow: 0 0 0 3px rgba(227,6,19,0.15) !important;
+    border-color: #F47920 !important;
+    box-shadow: 0 0 0 3px rgba(244,121,32,0.15) !important;
 }
 
 /* Labels y texto del sidebar */
@@ -71,23 +71,23 @@ label, .stMarkdown p, .stMarkdown li { color: #c0c0cc !important; }
 
 /* Slider */
 div[data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] {
-    background: #E30613 !important;
+    background: #F47920 !important;
 }
 
 /* Dataframe */
 [data-testid="stDataFrame"] {
-    border: 1px solid rgba(227,6,19,0.2) !important;
+    border: 1px solid rgba(244,121,32,0.2) !important;
     border-radius: 12px !important;
     overflow: hidden !important;
 }
 
 /* Divider */
-hr { border-color: rgba(227,6,19,0.15) !important; }
+hr { border-color: rgba(244,121,32,0.15) !important; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: #0a0a0f; }
-::-webkit-scrollbar-thumb { background: #E30613; border-radius: 10px; }
+::-webkit-scrollbar-track { background: #050505; }
+::-webkit-scrollbar-thumb { background: #F47920; border-radius: 10px; }
 
 /* Animaciones */
 @keyframes fadeUp {
@@ -99,8 +99,8 @@ hr { border-color: rgba(227,6,19,0.15) !important; }
     50%       { opacity: 0.3; }
 }
 @keyframes glow {
-    0%, 100% { box-shadow: 0 0 16px rgba(227,6,19,0.2); }
-    50%       { box-shadow: 0 0 36px rgba(227,6,19,0.45); }
+    0%, 100% { box-shadow: 0 0 16px rgba(244,121,32,0.2); }
+    50%       { box-shadow: 0 0 36px rgba(244,121,32,0.45); }
 }
 @keyframes barFill {
     from { width: 0 !important; }
@@ -112,8 +112,8 @@ hr { border-color: rgba(227,6,19,0.15) !important; }
 
 /* Hero */
 .hero {
-    background: linear-gradient(135deg, #120003 0%, #1c0005 40%, #0d0002 100%);
-    border: 1px solid rgba(227,6,19,0.3);
+    background: linear-gradient(135deg, #0f0a00 0%, #1a0e00 40%, #100800 100%);
+    border: 1px solid rgba(244,121,32,0.3);
     border-radius: 18px;
     padding: 36px 44px;
     margin-bottom: 28px;
@@ -132,7 +132,7 @@ hr { border-color: rgba(227,6,19,0.15) !important; }
     font-size: 2.4rem;
     font-weight: 900;
     letter-spacing: -1px;
-    background: linear-gradient(135deg, #fff 0%, #ffaaaa 50%, #E30613 100%);
+    background: linear-gradient(135deg, #fff 0%, #FFD4A8 50%, #F47920 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -141,15 +141,15 @@ hr { border-color: rgba(227,6,19,0.15) !important; }
 .hero-sub { font-size: 0.9rem; color: rgba(255,255,255,0.45); font-weight: 400; }
 .live-badge {
     display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(227,6,19,0.12);
-    border: 1px solid rgba(227,6,19,0.4);
-    color: #ff5566; padding: 7px 16px; border-radius: 50px;
+    background: rgba(244,121,32,0.12);
+    border: 1px solid rgba(244,121,32,0.4);
+    color: #FF9A45; padding: 7px 16px; border-radius: 50px;
     font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
 }
 .live-dot {
-    width: 8px; height: 8px; background: #E30613; border-radius: 50%;
+    width: 8px; height: 8px; background: #F47920; border-radius: 50%;
     animation: pulse 1.5s ease-in-out infinite;
-    box-shadow: 0 0 8px #E30613;
+    box-shadow: 0 0 8px #F47920;
 }
 .hero-stats { display: flex; gap: 32px; margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.06); flex-wrap: wrap; }
 .hero-stat { display: flex; flex-direction: column; gap: 2px; }
@@ -159,17 +159,17 @@ hr { border-color: rgba(227,6,19,0.15) !important; }
 /* KPI cards */
 .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin: 20px 0 28px; }
 .kpi-card {
-    background: #10101a;
-    border: 1px solid rgba(227,6,19,0.18);
+    background: #0c0c14;
+    border: 1px solid rgba(244,121,32,0.18);
     border-radius: 14px; padding: 22px 18px;
     position: relative; overflow: hidden;
     animation: fadeUp 0.5s ease forwards;
     transition: border-color 0.3s, transform 0.3s;
 }
-.kpi-card:hover { border-color: rgba(227,6,19,0.5); transform: translateY(-3px); }
+.kpi-card:hover { border-color: rgba(244,121,32,0.5); transform: translateY(-3px); }
 .kpi-card::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, #E30613, transparent);
+    background: linear-gradient(90deg, transparent, #F47920, transparent);
 }
 .kpi-icon { font-size: 1.5rem; margin-bottom: 8px; }
 .kpi-label { font-size: 0.68rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; margin-bottom: 4px; }
@@ -179,7 +179,7 @@ hr { border-color: rgba(227,6,19,0.15) !important; }
 /* Section header */
 .sec { display: flex; align-items: center; gap: 10px; margin: 28px 0 14px; }
 .sec-title { font-size: 0.95rem; font-weight: 700; color: #f0f0f0; white-space: nowrap; }
-.sec-line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(227,6,19,0.3), transparent); }
+.sec-line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(244,121,32,0.3), transparent); }
 .sec-count { font-size: 0.72rem; color: rgba(255,255,255,0.25); white-space: nowrap; }
 
 /* Discount bars */
@@ -187,43 +187,43 @@ hr { border-color: rgba(227,6,19,0.15) !important; }
 .disc-row { display: flex; align-items: center; gap: 12px; animation: fadeUp 0.4s ease forwards; }
 .disc-name { font-size: 0.8rem; color: rgba(255,255,255,0.7); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .disc-track { width: 200px; height: 7px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; flex-shrink: 0; }
-.disc-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #7c0009, #E30613, #ff4757); box-shadow: 0 0 8px rgba(227,6,19,0.5); animation: barFill 1s cubic-bezier(0.4,0,0.2,1) forwards; }
-.disc-pct { font-size: 0.78rem; font-weight: 700; color: #ff5566; min-width: 34px; text-align: right; }
+.disc-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #9E4500, #F47920, #FF9A45); box-shadow: 0 0 8px rgba(244,121,32,0.5); animation: barFill 1s cubic-bezier(0.4,0,0.2,1) forwards; }
+.disc-pct { font-size: 0.78rem; font-weight: 700; color: #FF9A45; min-width: 34px; text-align: right; }
 
 /* Product cards */
 .prod-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
 .prod-card {
-    background: #10101a; border: 1px solid rgba(255,255,255,0.06);
+    background: #0c0c14; border: 1px solid rgba(255,255,255,0.06);
     border-radius: 13px; padding: 16px 18px;
     position: relative; overflow: hidden;
     animation: fadeUp 0.5s ease forwards;
     transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
-.prod-card:hover { border-color: rgba(227,6,19,0.45); transform: translateY(-3px); box-shadow: 0 10px 28px rgba(227,6,19,0.12); }
+.prod-card:hover { border-color: rgba(244,121,32,0.45); transform: translateY(-3px); box-shadow: 0 10px 28px rgba(244,121,32,0.12); }
 .prod-rank {
     position: absolute; top: 12px; right: 12px;
     width: 26px; height: 26px;
-    background: linear-gradient(135deg, #E30613, #9b0010);
+    background: linear-gradient(135deg, #F47920, #C85A00);
     border-radius: 50%; display: flex; align-items: center; justify-content: center;
     font-size: 0.68rem; font-weight: 800; color: white;
-    box-shadow: 0 3px 10px rgba(227,6,19,0.5);
+    box-shadow: 0 3px 10px rgba(244,121,32,0.5);
 }
-.prod-brand { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.5px; color: #E30613; font-weight: 700; margin-bottom: 5px; }
+.prod-brand { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.5px; color: #F47920; font-weight: 700; margin-bottom: 5px; }
 .prod-name { font-size: 0.82rem; color: rgba(255,255,255,0.8); line-height: 1.4; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.3em; }
 .prod-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .prod-price { font-size: 1.2rem; font-weight: 800; color: #f9fafb; letter-spacing: -0.4px; }
 .prod-old { font-size: 0.7rem; text-decoration: line-through; color: rgba(255,255,255,0.28); margin-bottom: 2px; }
 .badge {
-    background: linear-gradient(135deg, #E30613, #9b0010);
+    background: linear-gradient(135deg, #F47920, #C85A00);
     color: white; font-size: 0.72rem; font-weight: 800;
     padding: 3px 9px; border-radius: 20px;
-    box-shadow: 0 3px 10px rgba(227,6,19,0.4);
+    box-shadow: 0 3px 10px rgba(244,121,32,0.4);
 }
 .prod-rating { margin-top: 9px; font-size: 0.72rem; color: rgba(255,255,255,0.3); }
 
 /* Footer */
 .footer { text-align: center; padding: 28px 0 12px; border-top: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); font-size: 0.72rem; margin-top: 36px; }
-.footer b { color: #E30613; }
+.footer b { color: #F47920; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -264,8 +264,8 @@ with st.sidebar:
     ts = datetime.fromtimestamp(st.session_state.last_refresh).strftime("%H:%M:%S")
     st.markdown(f"""
     <div style="font-size:0.75rem;color:rgba(255,255,255,0.3);line-height:2">
-        🕒 Última vez: <b style="color:#E30613">{ts}</b><br>
-        🔄 Búsquedas: <b style="color:#E30613">{st.session_state.refresh_count}</b><br>
+        🕒 Última vez: <b style="color:#F47920">{ts}</b><br>
+        🔄 Búsquedas: <b style="color:#F47920">{st.session_state.refresh_count}</b><br>
         📡 Fuente: <b style="color:rgba(255,255,255,0.4)">Algolia API</b>
     </div>
     """, unsafe_allow_html=True)
@@ -362,7 +362,7 @@ col1, col2 = st.columns(2)
 with col1:
     fig1 = go.Figure(go.Histogram(
         x=filtered.precio_cop, nbinsx=25,
-        marker=dict(color="#E30613", line=dict(color="#9b0010", width=1), opacity=0.85),
+        marker=dict(color="#F47920", line=dict(color="#C85A00", width=1), opacity=0.85),
         hovertemplate="<b>$%{x:,.0f}</b><br>%{y} productos<extra></extra>",
     ))
     fig1.update_layout(
@@ -371,7 +371,7 @@ with col1:
         margin=dict(t=40,b=20,l=10,r=10),
         xaxis=dict(gridcolor=GRID, linecolor=GRID, tickprefix="$", tickformat=",.0f", tickfont=dict(size=10)),
         yaxis=dict(gridcolor=GRID, linecolor=GRID, tickfont=dict(size=10)),
-        hoverlabel=dict(bgcolor="#1a0003", bordercolor="#E30613", font=dict(color="white")),
+        hoverlabel=dict(bgcolor="#1a0e00", bordercolor="#F47920", font=dict(color="white")),
     )
     st.plotly_chart(fig1, use_container_width=True)
 
@@ -382,8 +382,8 @@ with col2:
         x=top_brands["marca"], y=top_brands["cantidad"],
         marker=dict(
             color=top_brands["cantidad"],
-            colorscale=[[0,"#2d0006"],[0.5,"#9b0010"],[1,"#E30613"]],
-            line=dict(color="#9b0010", width=1),
+            colorscale=[[0,"#2a1800"],[0.5,"#C85A00"],[1,"#F47920"]],
+            line=dict(color="#C85A00", width=1),
         ),
         hovertemplate="<b>%{x}</b><br>%{y} productos<extra></extra>",
     ))
@@ -393,7 +393,7 @@ with col2:
         margin=dict(t=40,b=20,l=10,r=10), coloraxis_showscale=False,
         xaxis=dict(gridcolor=GRID, linecolor=GRID, tickangle=-30, tickfont=dict(size=10)),
         yaxis=dict(gridcolor=GRID, linecolor=GRID, tickfont=dict(size=10)),
-        hoverlabel=dict(bgcolor="#1a0003", bordercolor="#E30613", font=dict(color="white")),
+        hoverlabel=dict(bgcolor="#1a0e00", bordercolor="#F47920", font=dict(color="white")),
     )
     st.plotly_chart(fig2, use_container_width=True)
 
