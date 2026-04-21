@@ -6,7 +6,6 @@ from datetime import datetime
 
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -19,605 +18,212 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── Session state ─────────────────────────────────────────────────────────────
 if "last_refresh" not in st.session_state:
     st.session_state.last_refresh = time.time()
 if "refresh_count" not in st.session_state:
     st.session_state.refresh_count = 0
 
-# ── Global CSS + Animations ───────────────────────────────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-/* === BASE === */
-*, *::before, *::after { box-sizing: border-box; }
 html, body, [class*="css"] { font-family: 'Inter', sans-serif !important; }
 
-/* === ANIMATED BACKGROUND === */
-.stApp {
-    background: #050505;
-    background-image:
-        radial-gradient(ellipse at 20% 50%, rgba(227,6,19,0.06) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 20%, rgba(180,0,15,0.04) 0%, transparent 50%),
-        radial-gradient(ellipse at 60% 80%, rgba(100,0,8,0.05) 0%, transparent 50%);
-    color: #f0f0f0;
-    position: relative;
-    isolation: isolate;
-}
+.stApp { background: #0a0a0f !important; }
 
-/* Ensure all main content stays above the background overlay */
-.main .block-container {
-    position: relative;
-    z-index: 1;
-}
-
-/* Grid lines background */
-.stApp::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image:
-        linear-gradient(rgba(227,6,19,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(227,6,19,0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
-    pointer-events: none;
-    z-index: -1;
-    animation: gridPulse 8s ease-in-out infinite;
-}
-
-@keyframes gridPulse {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 1; }
-}
-
-/* === SIDEBAR === */
 section[data-testid="stSidebar"] {
-    background: rgba(10,10,10,0.95) !important;
+    background: #0d0d14 !important;
     border-right: 1px solid rgba(227,6,19,0.2) !important;
-    backdrop-filter: blur(20px);
-}
-section[data-testid="stSidebar"]::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #E30613, transparent);
-    animation: scanline 3s linear infinite;
 }
 
-@keyframes scanline {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-/* === BUTTONS === */
+/* Botones */
 div[data-testid="stButton"] > button,
 .stDownloadButton > button {
-    background: linear-gradient(135deg, #E30613 0%, #9b0010 100%) !important;
+    background: linear-gradient(135deg, #E30613, #9b0010) !important;
     color: white !important;
     border: none !important;
     border-radius: 10px !important;
     font-weight: 700 !important;
-    letter-spacing: 0.3px !important;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-    box-shadow: 0 4px 20px rgba(227,6,19,0.4), inset 0 1px 0 rgba(255,255,255,0.1) !important;
-    position: relative !important;
-    overflow: hidden !important;
-}
-div[data-testid="stButton"] > button::after,
-.stDownloadButton > button::after {
-    content: '';
-    position: absolute;
-    top: -50%; left: -60%;
-    width: 40%; height: 200%;
-    background: rgba(255,255,255,0.15);
-    transform: skewX(-20deg);
-    transition: left 0.4s ease;
-}
-div[data-testid="stButton"] > button:hover::after,
-.stDownloadButton > button:hover::after {
-    left: 130%;
+    box-shadow: 0 4px 20px rgba(227,6,19,0.35) !important;
+    transition: all 0.25s ease !important;
 }
 div[data-testid="stButton"] > button:hover,
 .stDownloadButton > button:hover {
-    transform: translateY(-2px) scale(1.02) !important;
-    box-shadow: 0 8px 30px rgba(227,6,19,0.6), 0 0 40px rgba(227,6,19,0.2) !important;
-}
-div[data-testid="stButton"] > button:active,
-.stDownloadButton > button:active {
-    transform: translateY(0) scale(0.98) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 28px rgba(227,6,19,0.55) !important;
 }
 
-/* === INPUTS === */
-div[data-testid="stTextInput"] input,
-div[data-testid="stNumberInput"] input {
-    background: rgba(255,255,255,0.04) !important;
+/* Inputs */
+div[data-testid="stTextInput"] input {
+    background: #14141f !important;
     border: 1px solid rgba(227,6,19,0.25) !important;
-    border-radius: 10px !important;
-    color: #f9fafb !important;
-    transition: all 0.3s ease !important;
+    border-radius: 8px !important;
+    color: #f0f0f0 !important;
 }
 div[data-testid="stTextInput"] input:focus {
     border-color: #E30613 !important;
-    box-shadow: 0 0 0 3px rgba(227,6,19,0.15), 0 0 20px rgba(227,6,19,0.1) !important;
-    background: rgba(227,6,19,0.04) !important;
+    box-shadow: 0 0 0 3px rgba(227,6,19,0.15) !important;
 }
 
-/* === SLIDER === */
-div[data-testid="stSlider"] > div > div > div {
+/* Labels y texto del sidebar */
+label, .stMarkdown p, .stMarkdown li { color: #c0c0cc !important; }
+
+/* Slider */
+div[data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] {
     background: #E30613 !important;
 }
 
-/* === DATAFRAME === */
+/* Dataframe */
 [data-testid="stDataFrame"] {
     border: 1px solid rgba(227,6,19,0.2) !important;
-    border-radius: 14px !important;
+    border-radius: 12px !important;
     overflow: hidden !important;
-    box-shadow: 0 0 30px rgba(227,6,19,0.05) !important;
 }
 
-/* === DIVIDER === */
-hr { border-color: rgba(227,6,19,0.15) !important; margin: 24px 0 !important; }
+/* Divider */
+hr { border-color: rgba(227,6,19,0.15) !important; }
 
-/* === SCROLLBAR === */
+/* Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: #050505; }
-::-webkit-scrollbar-thumb { background: linear-gradient(#E30613, #9b0010); border-radius: 10px; }
+::-webkit-scrollbar-track { background: #0a0a0f; }
+::-webkit-scrollbar-thumb { background: #E30613; border-radius: 10px; }
 
-/* === KPI CARD ANIMATIONS === */
-@keyframes countUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+/* Animaciones */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
-
-@keyframes glowPulse {
-    0%, 100% { box-shadow: 0 0 20px rgba(227,6,19,0.2), inset 0 1px 0 rgba(255,255,255,0.05); }
-    50% { box-shadow: 0 0 40px rgba(227,6,19,0.35), inset 0 1px 0 rgba(255,255,255,0.05); }
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
 }
-
-@keyframes livePulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 16px rgba(227,6,19,0.2); }
+    50%       { box-shadow: 0 0 36px rgba(227,6,19,0.45); }
 }
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes barFill {
+    from { width: 0 !important; }
 }
-
 @keyframes shimmer {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
 }
 
-@keyframes borderGlow {
-    0%, 100% { border-color: rgba(227,6,19,0.3); }
-    50% { border-color: rgba(227,6,19,0.7); }
-}
-
-/* === HERO === */
+/* Hero */
 .hero {
-    background: linear-gradient(135deg, #0d0000 0%, #1a0003 30%, #0d0000 60%, #050000 100%);
+    background: linear-gradient(135deg, #120003 0%, #1c0005 40%, #0d0002 100%);
     border: 1px solid rgba(227,6,19,0.3);
-    border-radius: 20px;
-    padding: 40px 48px;
-    margin-bottom: 32px;
+    border-radius: 18px;
+    padding: 36px 44px;
+    margin-bottom: 28px;
     position: relative;
     overflow: hidden;
-    animation: borderGlow 4s ease-in-out infinite;
+    animation: fadeUp 0.5s ease, glow 4s ease-in-out infinite;
 }
-
-.hero::before {
-    content: '';
+.hero-shine {
     position: absolute;
-    top: 0; left: -100%; right: 0; bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(227,6,19,0.06), transparent);
-    animation: heroShimmer 4s ease-in-out infinite;
-}
-
-@keyframes heroShimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-}
-
-.hero-glow {
-    position: absolute;
-    top: -80px; left: 50%;
-    transform: translateX(-50%);
-    width: 600px; height: 200px;
-    background: radial-gradient(ellipse, rgba(227,6,19,0.15) 0%, transparent 70%);
+    top: 0; left: -60%; width: 40%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+    animation: shimmer 5s ease-in-out infinite;
     pointer-events: none;
 }
-
 .hero-title {
-    font-size: 2.6rem;
+    font-size: 2.4rem;
     font-weight: 900;
     letter-spacing: -1px;
-    line-height: 1.1;
-    background: linear-gradient(135deg, #ffffff 0%, #ff6b6b 50%, #E30613 100%);
+    background: linear-gradient(135deg, #fff 0%, #ffaaaa 50%, #E30613 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin: 0 0 8px 0;
+    margin: 0 0 6px;
 }
-
-.hero-sub {
-    font-size: 0.95rem;
-    color: rgba(255,255,255,0.5);
-    font-weight: 400;
-    letter-spacing: 0.3px;
-}
-
+.hero-sub { font-size: 0.9rem; color: rgba(255,255,255,0.45); font-weight: 400; }
 .live-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(227,6,19,0.1);
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(227,6,19,0.12);
     border: 1px solid rgba(227,6,19,0.4);
-    color: #ff4757;
-    padding: 8px 18px;
-    border-radius: 50px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    backdrop-filter: blur(10px);
+    color: #ff5566; padding: 7px 16px; border-radius: 50px;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
 }
-
 .live-dot {
-    width: 8px; height: 8px;
-    background: #E30613;
-    border-radius: 50%;
-    animation: livePulse 1.5s ease-in-out infinite;
+    width: 8px; height: 8px; background: #E30613; border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
     box-shadow: 0 0 8px #E30613;
 }
+.hero-stats { display: flex; gap: 32px; margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.06); flex-wrap: wrap; }
+.hero-stat { display: flex; flex-direction: column; gap: 2px; }
+.hero-stat-val { font-size: 1.35rem; font-weight: 800; color: #f9fafb; }
+.hero-stat-lbl { font-size: 0.68rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.8px; }
 
-.hero-stats {
-    display: flex;
-    gap: 32px;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-}
-
-.hero-stat {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.hero-stat-val {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: #f9fafb;
-}
-
-.hero-stat-lbl {
-    font-size: 0.72rem;
-    color: rgba(255,255,255,0.4);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-}
-
-/* === KPI === */
-.kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin: 24px 0;
-}
-
+/* KPI cards */
+.kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin: 20px 0 28px; }
 .kpi-card {
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(227,6,19,0.2);
-    border-radius: 16px;
-    padding: 24px 20px;
-    position: relative;
-    overflow: hidden;
-    animation: fadeInUp 0.6s ease forwards, glowPulse 4s ease-in-out infinite;
-    cursor: default;
-    transition: transform 0.3s ease, border-color 0.3s ease;
+    background: #10101a;
+    border: 1px solid rgba(227,6,19,0.18);
+    border-radius: 14px; padding: 22px 18px;
+    position: relative; overflow: hidden;
+    animation: fadeUp 0.5s ease forwards;
+    transition: border-color 0.3s, transform 0.3s;
 }
-
-.kpi-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(227,6,19,0.5);
-}
-
+.kpi-card:hover { border-color: rgba(227,6,19,0.5); transform: translateY(-3px); }
 .kpi-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, #E30613, transparent);
 }
+.kpi-icon { font-size: 1.5rem; margin-bottom: 8px; }
+.kpi-label { font-size: 0.68rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; margin-bottom: 4px; }
+.kpi-value { font-size: 1.7rem; font-weight: 800; color: #f9fafb; letter-spacing: -0.5px; }
+.kpi-sub { font-size: 0.72rem; color: rgba(255,255,255,0.25); margin-top: 4px; }
 
-.kpi-card::after {
-    content: '';
-    position: absolute;
-    bottom: -30px; right: -30px;
-    width: 80px; height: 80px;
-    background: radial-gradient(circle, rgba(227,6,19,0.1) 0%, transparent 70%);
-    border-radius: 50%;
-}
+/* Section header */
+.sec { display: flex; align-items: center; gap: 10px; margin: 28px 0 14px; }
+.sec-title { font-size: 0.95rem; font-weight: 700; color: #f0f0f0; white-space: nowrap; }
+.sec-line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(227,6,19,0.3), transparent); }
+.sec-count { font-size: 0.72rem; color: rgba(255,255,255,0.25); white-space: nowrap; }
 
-.kpi-icon { font-size: 1.6rem; margin-bottom: 10px; }
-.kpi-label {
-    font-size: 0.7rem;
-    color: rgba(255,255,255,0.4);
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    font-weight: 600;
-    margin-bottom: 6px;
-}
-.kpi-value {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #f9fafb;
-    letter-spacing: -1px;
-    font-variant-numeric: tabular-nums;
-}
-.kpi-delta {
-    font-size: 0.75rem;
-    color: rgba(255,255,255,0.35);
-    margin-top: 4px;
-}
+/* Discount bars */
+.disc-list { display: flex; flex-direction: column; gap: 11px; }
+.disc-row { display: flex; align-items: center; gap: 12px; animation: fadeUp 0.4s ease forwards; }
+.disc-name { font-size: 0.8rem; color: rgba(255,255,255,0.7); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.disc-track { width: 200px; height: 7px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; flex-shrink: 0; }
+.disc-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #7c0009, #E30613, #ff4757); box-shadow: 0 0 8px rgba(227,6,19,0.5); animation: barFill 1s cubic-bezier(0.4,0,0.2,1) forwards; }
+.disc-pct { font-size: 0.78rem; font-weight: 700; color: #ff5566; min-width: 34px; text-align: right; }
 
-/* === SECTION HEADER === */
-.sec-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 32px 0 16px;
-    animation: fadeInUp 0.5s ease;
+/* Product cards */
+.prod-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.prod-card {
+    background: #10101a; border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 13px; padding: 16px 18px;
+    position: relative; overflow: hidden;
+    animation: fadeUp 0.5s ease forwards;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
-.sec-icon { font-size: 1.1rem; }
-.sec-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #f9fafb;
-    letter-spacing: -0.2px;
-    white-space: nowrap;
-}
-.sec-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(227,6,19,0.3), transparent);
-}
-.sec-count {
-    font-size: 0.75rem;
-    color: rgba(255,255,255,0.3);
-    white-space: nowrap;
-}
-
-/* === PRODUCT CARDS === */
-.product-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 8px;
-}
-
-.product-card {
-    background: rgba(255,255,255,0.025);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 14px;
-    padding: 18px 20px;
-    position: relative;
-    overflow: hidden;
-    animation: fadeInUp 0.5s ease forwards;
-    transition: all 0.3s ease;
-}
-.product-card:hover {
-    border-color: rgba(227,6,19,0.4);
-    background: rgba(227,6,19,0.04);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(227,6,19,0.15);
-}
-.product-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(135deg, transparent 60%, rgba(227,6,19,0.04));
-    pointer-events: none;
-}
-
-.product-rank {
-    position: absolute;
-    top: 14px; right: 14px;
-    width: 28px; height: 28px;
+.prod-card:hover { border-color: rgba(227,6,19,0.45); transform: translateY(-3px); box-shadow: 0 10px 28px rgba(227,6,19,0.12); }
+.prod-rank {
+    position: absolute; top: 12px; right: 12px;
+    width: 26px; height: 26px;
     background: linear-gradient(135deg, #E30613, #9b0010);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.7rem;
-    font-weight: 800;
-    color: white;
-    box-shadow: 0 4px 12px rgba(227,6,19,0.5);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 0.68rem; font-weight: 800; color: white;
+    box-shadow: 0 3px 10px rgba(227,6,19,0.5);
 }
-
-.product-brand {
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: #E30613;
-    font-weight: 700;
-    margin-bottom: 6px;
-}
-
-.product-name {
-    font-size: 0.85rem;
-    color: rgba(255,255,255,0.85);
-    font-weight: 500;
-    line-height: 1.4;
-    margin-bottom: 14px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    min-height: 2.4em;
-}
-
-.product-price-row {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.product-price {
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: #f9fafb;
-    letter-spacing: -0.5px;
-}
-
-.product-old {
-    font-size: 0.75rem;
-    text-decoration: line-through;
-    color: rgba(255,255,255,0.3);
-    margin-bottom: 2px;
-}
-
-.discount-badge {
+.prod-brand { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.5px; color: #E30613; font-weight: 700; margin-bottom: 5px; }
+.prod-name { font-size: 0.82rem; color: rgba(255,255,255,0.8); line-height: 1.4; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.3em; }
+.prod-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.prod-price { font-size: 1.2rem; font-weight: 800; color: #f9fafb; letter-spacing: -0.4px; }
+.prod-old { font-size: 0.7rem; text-decoration: line-through; color: rgba(255,255,255,0.28); margin-bottom: 2px; }
+.badge {
     background: linear-gradient(135deg, #E30613, #9b0010);
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 800;
-    padding: 4px 10px;
-    border-radius: 20px;
-    letter-spacing: 0.3px;
-    box-shadow: 0 4px 12px rgba(227,6,19,0.4);
-    white-space: nowrap;
+    color: white; font-size: 0.72rem; font-weight: 800;
+    padding: 3px 9px; border-radius: 20px;
+    box-shadow: 0 3px 10px rgba(227,6,19,0.4);
 }
+.prod-rating { margin-top: 9px; font-size: 0.72rem; color: rgba(255,255,255,0.3); }
 
-.rating-row {
-    margin-top: 10px;
-    font-size: 0.75rem;
-    color: rgba(255,255,255,0.35);
-}
-
-/* === DISCOUNT BARS === */
-.disc-bar-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 4px 0;
-}
-
-.disc-item {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px;
-    align-items: center;
-    animation: fadeInUp 0.4s ease forwards;
-}
-
-.disc-name {
-    font-size: 0.82rem;
-    color: rgba(255,255,255,0.75);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.disc-bar-wrap {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 220px;
-}
-
-.disc-bar-bg {
-    flex: 1;
-    height: 8px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.disc-bar-fill {
-    height: 100%;
-    border-radius: 4px;
-    background: linear-gradient(90deg, #9b0010, #E30613, #ff4757);
-    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 10px rgba(227,6,19,0.6);
-    animation: barLoad 1s ease forwards;
-}
-
-@keyframes barLoad {
-    from { width: 0% !important; }
-}
-
-.disc-pct {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #ff4757;
-    min-width: 36px;
-    text-align: right;
-}
-
-/* === AUTO REFRESH COUNTER === */
-.refresh-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 10px;
-    padding: 10px 18px;
-    margin-bottom: 24px;
-    font-size: 0.78rem;
-    color: rgba(255,255,255,0.4);
-}
-
-.refresh-timer {
-    font-weight: 700;
-    color: #E30613;
-    font-variant-numeric: tabular-nums;
-}
-
-/* === FOOTER === */
-.footer {
-    text-align: center;
-    padding: 32px 0 16px;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    color: rgba(255,255,255,0.2);
-    font-size: 0.75rem;
-    letter-spacing: 0.5px;
-    margin-top: 40px;
-}
-
-.footer span { color: #E30613; }
+/* Footer */
+.footer { text-align: center; padding: 28px 0 12px; border-top: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); font-size: 0.72rem; margin-top: 36px; }
+.footer b { color: #E30613; }
 </style>
-""", unsafe_allow_html=True)
-
-# ── Auto-refresh JS (cada 5 min) ──────────────────────────────────────────────
-st.markdown("""
-<script>
-(function() {
-    var refreshSecs = 300;
-    var timerEl = null;
-
-    function findTimer() {
-        timerEl = document.getElementById('refresh-timer');
-        return timerEl;
-    }
-
-    function tick() {
-        if (!findTimer()) { setTimeout(tick, 500); return; }
-        if (refreshSecs <= 0) { location.reload(); return; }
-        var m = Math.floor(refreshSecs / 60);
-        var s = refreshSecs % 60;
-        timerEl.textContent = m + ':' + (s < 10 ? '0' : '') + s;
-        refreshSecs--;
-        setTimeout(tick, 1000);
-    }
-
-    window.addEventListener('load', function() { setTimeout(tick, 800); });
-})();
-</script>
 """, unsafe_allow_html=True)
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
@@ -630,7 +236,7 @@ with st.sidebar:
     st.markdown("### 🎛️ Filtros")
 
 # ── Load data ─────────────────────────────────────────────────────────────────
-@st.cache_data(show_spinner="⚡ Consultando Alkosto en tiempo real...")
+@st.cache_data(show_spinner="⚡ Consultando Alkosto...")
 def load_data(q: str, pages: int) -> pd.DataFrame:
     return pd.DataFrame(scrape(query=q, max_pages=pages))
 
@@ -642,7 +248,7 @@ if run_btn:
 df = load_data(query, max_pages)
 
 if df.empty:
-    st.error("❌ No se encontraron productos.")
+    st.error("❌ No se encontraron productos. Intenta con otro término.")
     st.stop()
 
 # ── Sidebar filters ───────────────────────────────────────────────────────────
@@ -654,21 +260,21 @@ with st.sidebar:
     marcas_sel = st.multiselect("Marca", options=marcas, default=marcas)
     solo_stock = st.checkbox("Solo en stock", value=True)
     st.markdown("---")
-    now_str = datetime.fromtimestamp(st.session_state.last_refresh).strftime("%H:%M:%S")
+    ts = datetime.fromtimestamp(st.session_state.last_refresh).strftime("%H:%M:%S")
     st.markdown(f"""
-    <div style="font-size:0.75rem; color:rgba(255,255,255,0.3); line-height:1.8">
-        🕒 Última actualización: <b style="color:#E30613">{now_str}</b><br>
-        🔄 Actualizaciones: <b style="color:#E30613">{st.session_state.refresh_count}</b><br>
-        📡 Fuente: <b style="color:rgba(255,255,255,0.5)">Algolia API</b>
+    <div style="font-size:0.75rem;color:rgba(255,255,255,0.3);line-height:2">
+        🕒 Última vez: <b style="color:#E30613">{ts}</b><br>
+        🔄 Búsquedas: <b style="color:#E30613">{st.session_state.refresh_count}</b><br>
+        📡 Fuente: <b style="color:rgba(255,255,255,0.4)">Algolia API</b>
     </div>
     """, unsafe_allow_html=True)
 
-# ── Apply filters ─────────────────────────────────────────────────────────────
+# ── Filters ───────────────────────────────────────────────────────────────────
 filtered = df[
     (df.precio_cop >= price_range[0]) &
     (df.precio_cop <= price_range[1]) &
     (df.marca.isin(marcas_sel))
-]
+].copy()
 if solo_stock:
     filtered = filtered[filtered.disponibilidad == "En stock"]
 if search_name:
@@ -678,56 +284,38 @@ if filtered.empty:
     st.warning("⚠️ Ningún producto coincide con los filtros.")
     st.stop()
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
-def parse_discount(d):
+def parse_disc(d):
     try:
-        return abs(int(str(d).replace("%", "").replace("-", "").strip()))
+        return abs(int(str(d).replace("%","").replace("-","").strip()))
     except:
         return 0
 
-filtered2 = filtered.copy()
-filtered2["desc_pct"] = filtered2["descuento"].apply(parse_discount)
-total     = len(filtered2)
-avg_price = filtered2.precio_cop.mean()
-min_price = filtered2.precio_cop.min()
-max_price = filtered2.precio_cop.max()
-in_stock  = (filtered2.disponibilidad == "En stock").sum()
+filtered["desc_pct"] = filtered["descuento"].apply(parse_disc)
+total    = len(filtered)
+avg_p    = filtered.precio_cop.mean()
+min_p    = filtered.precio_cop.min()
+in_stock = (filtered.disponibilidad == "En stock").sum()
+max_disc = filtered.desc_pct.max() if (filtered.desc_pct > 0).any() else 0
 
-# ── Hero Banner ───────────────────────────────────────────────────────────────
+# ── Hero ──────────────────────────────────────────────────────────────────────
+now_str = datetime.now().strftime("%d/%m/%Y %H:%M")
 st.markdown(f"""
 <div class="hero">
-    <div class="hero-glow"></div>
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px">
+    <div class="hero-shine"></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px">
         <div>
             <div class="hero-title">Alkosto Price Tracker</div>
             <div class="hero-sub">Monitoreo de precios en tiempo real · Alkosto Colombia 🇨🇴</div>
             <div class="hero-stats">
-                <div class="hero-stat">
-                    <span class="hero-stat-val">{total}</span>
-                    <span class="hero-stat-lbl">Productos</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="hero-stat-val">{in_stock}</span>
-                    <span class="hero-stat-lbl">En stock</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="hero-stat-val">${avg_price:,.0f}</span>
-                    <span class="hero-stat-lbl">Precio prom.</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="hero-stat-val">{(filtered2.desc_pct > 0).sum()}</span>
-                    <span class="hero-stat-lbl">Con descuento</span>
-                </div>
+                <div class="hero-stat"><span class="hero-stat-val">{total}</span><span class="hero-stat-lbl">Productos</span></div>
+                <div class="hero-stat"><span class="hero-stat-val">{in_stock}</span><span class="hero-stat-lbl">En stock</span></div>
+                <div class="hero-stat"><span class="hero-stat-val">${avg_p:,.0f}</span><span class="hero-stat-lbl">Precio prom.</span></div>
+                <div class="hero-stat"><span class="hero-stat-val">{max_disc}%</span><span class="hero-stat-lbl">Max descuento</span></div>
             </div>
         </div>
-        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:12px">
-            <div class="live-badge">
-                <div class="live-dot"></div>
-                LIVE
-            </div>
-            <div style="font-size:0.75rem; color:rgba(255,255,255,0.3); text-align:right">
-                Auto-refresh en <span class="refresh-timer" id="refresh-timer" style="color:#E30613; font-weight:700">5:00</span>
-            </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px">
+            <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+            <div style="font-size:0.72rem;color:rgba(255,255,255,0.25)">{now_str}</div>
         </div>
     </div>
 </div>
@@ -740,240 +328,141 @@ st.markdown(f"""
         <div class="kpi-icon">📦</div>
         <div class="kpi-label">Total productos</div>
         <div class="kpi-value">{total:,}</div>
-        <div class="kpi-delta">Búsqueda: "{query}"</div>
+        <div class="kpi-sub">"{query}"</div>
     </div>
     <div class="kpi-card" style="animation-delay:0.1s">
         <div class="kpi-icon">💰</div>
         <div class="kpi-label">Precio promedio</div>
-        <div class="kpi-value">${avg_price:,.0f}</div>
-        <div class="kpi-delta">COP</div>
+        <div class="kpi-value">${avg_p:,.0f}</div>
+        <div class="kpi-sub">COP</div>
     </div>
     <div class="kpi-card" style="animation-delay:0.15s">
         <div class="kpi-icon">⚡</div>
         <div class="kpi-label">Precio mínimo</div>
-        <div class="kpi-value">${min_price:,.0f}</div>
-        <div class="kpi-delta">Mejor oferta</div>
+        <div class="kpi-value">${min_p:,.0f}</div>
+        <div class="kpi-sub">Mejor oferta</div>
     </div>
     <div class="kpi-card" style="animation-delay:0.2s">
         <div class="kpi-icon">🔥</div>
         <div class="kpi-label">Mayor descuento</div>
-        <div class="kpi-value">{filtered2.desc_pct.max() if (filtered2.desc_pct > 0).any() else 0}%</div>
-        <div class="kpi-delta">vs precio original</div>
+        <div class="kpi-value">{max_disc}%</div>
+        <div class="kpi-sub">vs precio original</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
 # ── Charts ────────────────────────────────────────────────────────────────────
-st.markdown("""
-<div class="sec-header">
-    <span class="sec-icon">📉</span>
-    <span class="sec-title">Análisis de precios</span>
-    <div class="sec-line"></div>
-</div>
-""", unsafe_allow_html=True)
+st.markdown("""<div class="sec"><span class="sec-title">📉 Análisis de precios</span><div class="sec-line"></div></div>""", unsafe_allow_html=True)
 
-BG = "rgba(0,0,0,0)"
-GRID = "rgba(255,255,255,0.04)"
-FONT = "rgba(255,255,255,0.4)"
-FONT_TITLE = "rgba(255,255,255,0.85)"
+BG, GRID, FONT = "rgba(0,0,0,0)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0.4)"
+FONT_T = "rgba(255,255,255,0.85)"
 
 col1, col2 = st.columns(2)
-
 with col1:
-    fig1 = go.Figure()
-    fig1.add_trace(go.Histogram(
-        x=filtered2.precio_cop, nbinsx=25,
-        marker=dict(
-            color="#E30613",
-            line=dict(color="#9b0010", width=1),
-            opacity=0.85,
-        ),
-        name="Precio",
-        hovertemplate="<b>Rango:</b> $%{x:,.0f}<br><b>Productos:</b> %{y}<extra></extra>",
+    fig1 = go.Figure(go.Histogram(
+        x=filtered.precio_cop, nbinsx=25,
+        marker=dict(color="#E30613", line=dict(color="#9b0010", width=1), opacity=0.85),
+        hovertemplate="<b>$%{x:,.0f}</b><br>%{y} productos<extra></extra>",
     ))
     fig1.update_layout(
-        title=dict(text="Distribución de precios", font=dict(color=FONT_TITLE, size=13, family="Inter"), x=0.01),
-        paper_bgcolor=BG, plot_bgcolor=BG,
-        font=dict(color=FONT, family="Inter"),
-        margin=dict(t=40, b=20, l=10, r=10),
-        xaxis=dict(gridcolor=GRID, linecolor=GRID, tickfont=dict(size=10), tickprefix="$", tickformat=",.0f"),
+        title=dict(text="Distribución de precios", font=dict(color=FONT_T, size=13, family="Inter"), x=0.01),
+        paper_bgcolor=BG, plot_bgcolor=BG, font=dict(color=FONT, family="Inter"),
+        margin=dict(t=40,b=20,l=10,r=10),
+        xaxis=dict(gridcolor=GRID, linecolor=GRID, tickprefix="$", tickformat=",.0f", tickfont=dict(size=10)),
         yaxis=dict(gridcolor=GRID, linecolor=GRID, tickfont=dict(size=10)),
         hoverlabel=dict(bgcolor="#1a0003", bordercolor="#E30613", font=dict(color="white")),
     )
     st.plotly_chart(fig1, use_container_width=True)
 
 with col2:
-    top_brands = filtered2.marca.value_counts().head(10).reset_index()
+    top_brands = filtered.marca.value_counts().head(10).reset_index()
     top_brands.columns = ["marca", "cantidad"]
-    fig2 = go.Figure()
-    fig2.add_trace(go.Bar(
+    fig2 = go.Figure(go.Bar(
         x=top_brands["marca"], y=top_brands["cantidad"],
         marker=dict(
             color=top_brands["cantidad"],
-            colorscale=[[0, "#3d0008"], [0.5, "#9b0010"], [1, "#E30613"]],
+            colorscale=[[0,"#2d0006"],[0.5,"#9b0010"],[1,"#E30613"]],
             line=dict(color="#9b0010", width=1),
         ),
-        hovertemplate="<b>%{x}</b><br>Productos: %{y}<extra></extra>",
+        hovertemplate="<b>%{x}</b><br>%{y} productos<extra></extra>",
     ))
     fig2.update_layout(
-        title=dict(text="Top 10 marcas", font=dict(color=FONT_TITLE, size=13, family="Inter"), x=0.01),
-        paper_bgcolor=BG, plot_bgcolor=BG,
-        font=dict(color=FONT, family="Inter"),
-        margin=dict(t=40, b=20, l=10, r=10),
+        title=dict(text="Top 10 marcas", font=dict(color=FONT_T, size=13, family="Inter"), x=0.01),
+        paper_bgcolor=BG, plot_bgcolor=BG, font=dict(color=FONT, family="Inter"),
+        margin=dict(t=40,b=20,l=10,r=10), coloraxis_showscale=False,
         xaxis=dict(gridcolor=GRID, linecolor=GRID, tickangle=-30, tickfont=dict(size=10)),
         yaxis=dict(gridcolor=GRID, linecolor=GRID, tickfont=dict(size=10)),
         hoverlabel=dict(bgcolor="#1a0003", bordercolor="#E30613", font=dict(color="white")),
     )
     st.plotly_chart(fig2, use_container_width=True)
 
-# ── Top Discounts Bars ────────────────────────────────────────────────────────
-top_disc = filtered2[filtered2["desc_pct"] > 0].nlargest(10, "desc_pct")
-
+# ── Discount Bars ─────────────────────────────────────────────────────────────
+top_disc = filtered[filtered.desc_pct > 0].nlargest(10, "desc_pct")
 if not top_disc.empty:
-    max_disc = top_disc["desc_pct"].max()
-    st.markdown(f"""
-    <div class="sec-header">
-        <span class="sec-icon">🔥</span>
-        <span class="sec-title">Top descuentos activos</span>
-        <div class="sec-line"></div>
-        <span class="sec-count">{len(top_disc)} productos</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-    bars_html = '<div class="disc-bar-container">'
-    for _, row in top_disc.iterrows():
-        pct = row["desc_pct"]
-        width = int((pct / max_disc) * 100)
-        name = str(row["nombre"])[:60] + ("…" if len(str(row["nombre"])) > 60 else "")
-        bars_html += f"""
-        <div class="disc-item">
+    max_d = top_disc.desc_pct.max()
+    st.markdown(f"""<div class="sec"><span class="sec-title">🔥 Top descuentos activos</span><div class="sec-line"></div><span class="sec-count">{len(top_disc)} productos</span></div>""", unsafe_allow_html=True)
+    rows = ""
+    for _, r in top_disc.iterrows():
+        name = str(r["nombre"])[:65] + ("…" if len(str(r["nombre"])) > 65 else "")
+        w = int((r.desc_pct / max_d) * 100)
+        rows += f"""
+        <div class="disc-row">
             <span class="disc-name">{name}</span>
-            <div class="disc-bar-wrap">
-                <div class="disc-bar-bg">
-                    <div class="disc-bar-fill" style="width:{width}%"></div>
-                </div>
-                <span class="disc-pct">-{pct}%</span>
-            </div>
+            <div class="disc-track"><div class="disc-fill" style="width:{w}%"></div></div>
+            <span class="disc-pct">-{r.desc_pct}%</span>
         </div>"""
-    bars_html += "</div>"
-    st.markdown(bars_html, unsafe_allow_html=True)
+    st.markdown(f'<div class="disc-list">{rows}</div>', unsafe_allow_html=True)
 
-# ── Top Product Cards ─────────────────────────────────────────────────────────
-st.markdown(f"""
-<div class="sec-header" style="margin-top:32px">
-    <span class="sec-icon">⭐</span>
-    <span class="sec-title">Mejores ofertas destacadas</span>
-    <div class="sec-line"></div>
-</div>
-""", unsafe_allow_html=True)
+# ── Product Cards ─────────────────────────────────────────────────────────────
+st.markdown("""<div class="sec" style="margin-top:28px"><span class="sec-title">⭐ Mejores ofertas</span><div class="sec-line"></div></div>""", unsafe_allow_html=True)
 
-highlight = filtered2[filtered2["desc_pct"] > 0].nlargest(6, "desc_pct")
-if highlight.empty:
-    highlight = filtered2.nsmallest(6, "precio_cop")
-
-cards_html = '<div class="product-grid">'
-for i, (_, row) in enumerate(highlight.iterrows()):
-    brand = str(row.get("marca", "")).strip() or "—"
-    name = str(row.get("nombre", ""))
-    price = row.get("precio_cop", 0)
-    old_price = row.get("precio_original_cop", 0)
-    disc = str(row.get("descuento", "")).strip()
-    rating = row.get("rating", 0)
-    stars = "★" * round(rating) + "☆" * (5 - round(rating)) if rating else ""
-
-    old_html = f'<div class="product-old">${old_price:,.0f}</div>' if old_price and old_price > price else ""
-    badge_html = f'<span class="discount-badge">{disc}</span>' if disc else ""
-    rating_html = f'<div class="rating-row">{stars} {rating:.1f}</div>' if rating and rating > 0 else ""
-
-    cards_html += f"""
-    <div class="product-card" style="animation-delay:{i*0.07}s">
-        <div class="product-rank">#{i+1}</div>
-        <div class="product-brand">{brand}</div>
-        <div class="product-name">{name}</div>
-        <div class="product-price-row">
-            <div>
-                {old_html}
-                <div class="product-price">${price:,.0f}</div>
-            </div>
-            {badge_html}
+highlights = filtered[filtered.desc_pct > 0].nlargest(6, "desc_pct") if (filtered.desc_pct > 0).any() else filtered.nsmallest(6, "precio_cop")
+cards = ""
+for i, (_, r) in enumerate(highlights.iterrows()):
+    old_h = f'<div class="prod-old">${r.get("precio_original_cop",0):,.0f}</div>' if r.get("precio_original_cop", 0) > r.precio_cop else ""
+    badge_h = f'<span class="badge">{r.get("descuento","")}</span>' if str(r.get("descuento","")).strip() else ""
+    rat = r.get("rating", 0)
+    rat_h = f'<div class="prod-rating">{"★"*round(rat)}{"☆"*(5-round(rat))} {rat:.1f}</div>' if rat and rat > 0 else ""
+    cards += f"""
+    <div class="prod-card" style="animation-delay:{i*0.06}s">
+        <div class="prod-rank">#{i+1}</div>
+        <div class="prod-brand">{str(r.get("marca","")).strip() or "—"}</div>
+        <div class="prod-name">{r.get("nombre","")}</div>
+        <div class="prod-bottom">
+            <div>{old_h}<div class="prod-price">${r.precio_cop:,.0f}</div></div>
+            {badge_h}
         </div>
-        {rating_html}
+        {rat_h}
     </div>"""
+st.markdown(f'<div class="prod-grid">{cards}</div>', unsafe_allow_html=True)
 
-cards_html += "</div>"
-st.markdown(cards_html, unsafe_allow_html=True)
+# ── Table ─────────────────────────────────────────────────────────────────────
+st.markdown(f"""<div class="sec" style="margin-top:28px"><span class="sec-title">🗂️ Catálogo completo</span><div class="sec-line"></div><span class="sec-count">{total} resultados</span></div>""", unsafe_allow_html=True)
 
-# ── Full Table ────────────────────────────────────────────────────────────────
-st.markdown(f"""
-<div class="sec-header" style="margin-top:32px">
-    <span class="sec-icon">🗂️</span>
-    <span class="sec-title">Catálogo completo</span>
-    <div class="sec-line"></div>
-    <span class="sec-count">{len(filtered2)} resultados</span>
-</div>
-""", unsafe_allow_html=True)
-
-display_df = filtered2[["nombre", "marca", "precio_cop", "precio_original_cop", "descuento", "rating", "disponibilidad"]].copy()
-display_df["precio_cop"] = display_df["precio_cop"].apply(lambda x: f"${x:,.0f}")
-display_df["precio_original_cop"] = display_df["precio_original_cop"].apply(
-    lambda x: f"${x:,.0f}" if pd.notna(x) and x else "—"
-)
-display_df["rating"] = display_df["rating"].apply(lambda x: f"⭐ {x:.1f}" if x and x > 0 else "—")
-display_df["disponibilidad"] = display_df["disponibilidad"].apply(
-    lambda x: "✅ En stock" if x == "En stock" else "❌ Sin stock"
-)
-display_df = display_df.rename(columns={
-    "nombre": "Producto", "marca": "Marca", "precio_cop": "Precio",
-    "precio_original_cop": "Precio antes", "descuento": "Descuento",
-    "rating": "Rating", "disponibilidad": "Stock",
-})
-st.dataframe(display_df, use_container_width=True, hide_index=True,
-    column_config={
-        "Producto": st.column_config.TextColumn(width="large"),
-        "Precio": st.column_config.TextColumn(width="small"),
-        "Precio antes": st.column_config.TextColumn(width="small"),
-        "Descuento": st.column_config.TextColumn(width="small"),
-    }
-)
+disp = filtered[["nombre","marca","precio_cop","precio_original_cop","descuento","rating","disponibilidad"]].copy()
+disp["precio_cop"] = disp["precio_cop"].apply(lambda x: f"${x:,.0f}")
+disp["precio_original_cop"] = disp["precio_original_cop"].apply(lambda x: f"${x:,.0f}" if pd.notna(x) and x else "—")
+disp["rating"] = disp["rating"].apply(lambda x: f"⭐ {x:.1f}" if x and x > 0 else "—")
+disp["disponibilidad"] = disp["disponibilidad"].apply(lambda x: "✅ En stock" if x == "En stock" else "❌ Sin stock")
+disp.columns = ["Producto","Marca","Precio","Precio antes","Descuento","Rating","Stock"]
+st.dataframe(disp, use_container_width=True, hide_index=True,
+    column_config={"Producto": st.column_config.TextColumn(width="large")})
 
 # ── Downloads ─────────────────────────────────────────────────────────────────
-st.markdown("""
-<div class="sec-header" style="margin-top:24px">
-    <span class="sec-icon">⬇️</span>
-    <span class="sec-title">Exportar datos</span>
-    <div class="sec-line"></div>
-</div>
-""", unsafe_allow_html=True)
-
+st.markdown("""<div class="sec" style="margin-top:20px"><span class="sec-title">⬇️ Exportar</span><div class="sec-line"></div></div>""", unsafe_allow_html=True)
 d1, d2 = st.columns(2)
 with d1:
-    st.download_button(
-        "⬇️ Descargar CSV",
-        data=filtered2.to_csv(index=False).encode("utf-8-sig"),
-        file_name=f"alkosto_{query}.csv",
-        mime="text/csv",
-        use_container_width=True,
-    )
+    st.download_button("⬇️ CSV", data=filtered.to_csv(index=False).encode("utf-8-sig"),
+        file_name=f"alkosto_{query}.csv", mime="text/csv", use_container_width=True)
 with d2:
-    excel_buf = io.BytesIO()
-    with pd.ExcelWriter(excel_buf, engine="openpyxl") as writer:
-        filtered2.to_excel(writer, index=False, sheet_name="Productos")
-        ws = writer.sheets["Productos"]
-        for col in ws.columns:
-            ws.column_dimensions[col[0].column_letter].width = max(
-                len(str(c.value or "")) for c in col) + 4
-    st.download_button(
-        "⬇️ Descargar Excel",
-        data=excel_buf.getvalue(),
+    buf = io.BytesIO()
+    with pd.ExcelWriter(buf, engine="openpyxl") as w:
+        filtered.to_excel(w, index=False, sheet_name="Productos")
+        for col in w.sheets["Productos"].columns:
+            w.sheets["Productos"].column_dimensions[col[0].column_letter].width = max(len(str(c.value or "")) for c in col) + 4
+    st.download_button("⬇️ Excel", data=buf.getvalue(),
         file_name=f"alkosto_{query}.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        use_container_width=True,
-    )
+        use_container_width=True)
 
-# ── Footer ────────────────────────────────────────────────────────────────────
-st.markdown("""
-<div class="footer">
-    Alkosto Price Tracker &nbsp;·&nbsp; Datos en tiempo real vía <span>Algolia API</span>
-    &nbsp;·&nbsp; 🇨🇴 Colombia &nbsp;·&nbsp; Hecho con <span>♥</span>
-</div>
-""", unsafe_allow_html=True)
+st.markdown("""<div class="footer">Alkosto Price Tracker &nbsp;·&nbsp; <b>Algolia API</b> &nbsp;·&nbsp; 🇨🇴 Colombia</div>""", unsafe_allow_html=True)
