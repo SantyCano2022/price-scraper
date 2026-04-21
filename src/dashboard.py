@@ -299,8 +299,8 @@ with st.sidebar:
     min_p, max_p = float(df.precio_cop.min()), float(df.precio_cop.max())
     price_range = st.slider("Precio (COP)", min_p, max_p, (min_p, max_p), format="$%.0f")
     marcas = sorted(df.marca.dropna().unique())
-    marcas_sel = st.multiselect("Marca", options=marcas, default=marcas)
-    solo_stock = st.checkbox("Solo en stock", value=True)
+    marcas_sel = st.multiselect("Marca", options=marcas, default=[])
+    solo_stock = st.checkbox("Solo en stock", value=False)
     st.markdown("---")
     ts = datetime.fromtimestamp(st.session_state.last_refresh).strftime("%H:%M:%S")
     st.markdown(f"""
@@ -312,10 +312,11 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
 # ── Filters ───────────────────────────────────────────────────────────────────
+marca_filter = marcas_sel if marcas_sel else marcas
 filtered = df[
     (df.precio_cop >= price_range[0]) &
     (df.precio_cop <= price_range[1]) &
-    (df.marca.isin(marcas_sel))
+    (df.marca.isin(marca_filter))
 ].copy()
 if solo_stock:
     filtered = filtered[filtered.disponibilidad == "En stock"]
