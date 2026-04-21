@@ -241,6 +241,8 @@ hr { border-color: rgba(244,121,32,0.15) !important; }
     transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 .prod-card:hover { border-color: rgba(244,121,32,0.45); transform: translateY(-3px); box-shadow: 0 10px 28px rgba(244,121,32,0.12); }
+a.prod-link { text-decoration: none !important; display: block; color: inherit !important; }
+a.prod-link:hover { text-decoration: none !important; }
 .prod-rank {
     position: absolute; top: 12px; right: 12px;
     width: 26px; height: 26px;
@@ -470,8 +472,10 @@ for row_start in range(0, len(rows_list), 3):
         rat_h    = f'<div class="prod-rating">{"★"*round(rat)}{"☆"*(5-round(rat))} {rat:.1f}</div>' if rat and rat > 0 else ""
         name_s   = _html.escape(str(r.get("nombre","")))
         brand_s  = _html.escape(str(r.get("marca","")).strip() or "—")
+        url_s    = _html.escape(str(r.get("url","")).strip())
         with cols[col_idx]:
             st.markdown(f"""
+            <a class="prod-link" href="{url_s}" target="_blank" rel="noopener noreferrer">
             <div class="prod-card">
                 <div class="prod-rank">#{i+1}</div>
                 <div class="prod-brand">{brand_s}</div>
@@ -481,7 +485,7 @@ for row_start in range(0, len(rows_list), 3):
                     {badge_h}
                 </div>
                 {rat_h}
-            </div>""", unsafe_allow_html=True)
+            </div></a>""", unsafe_allow_html=True)
 # ── Table ─────────────────────────────────────────────────────────────────────
 st.markdown(f"""<div class="sec" style="margin-top:28px"><span class="sec-title">🗂️ Catálogo completo</span><div class="sec-line"></div><span class="sec-count">{total} resultados</span></div>""", unsafe_allow_html=True)
 
