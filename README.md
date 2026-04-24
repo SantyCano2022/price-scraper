@@ -6,7 +6,7 @@ Scraper de precios automatizado que extrae productos de Alkosto Colombia, los vi
 
 ## Demo
 
-**[https://price-scraper-for-alkosto.streamlit.app/](https://price-scraper-for-alkosto.streamlit.app/)**
+**<a href="https://price-scraper-for-alkosto.streamlit.app/" target="_blank">https://price-scraper-for-alkosto.streamlit.app/</a>**
 
 ## Arquitectura
 
