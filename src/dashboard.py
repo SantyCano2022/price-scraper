@@ -361,6 +361,52 @@ hr { border-color: rgba(255,255,255,0.06) !important; }
     white-space: nowrap;
 }
 
+/* ── Sidebar logo ── */
+.sb-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding: 4px 0 16px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid rgba(244,121,32,0.12);
+}
+.sb-logo-mark {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, #F47920, #9E3D00);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem; color: white;
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(244,121,32,0.4);
+    letter-spacing: 0;
+}
+.sb-logo-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem; letter-spacing: 2px;
+    color: white; line-height: 1;
+}
+.sb-logo-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.52rem; color: var(--muted);
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-top: 3px;
+}
+
+/* ── Sidebar section divider ── */
+.sb-divider {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(244,121,32,0.2), rgba(244,121,32,0.06), transparent);
+    margin: 10px 0 8px;
+}
+
+/* ── Sidebar status card ── */
+.sb-status-card {
+    background: rgba(244,121,32,0.04);
+    border: 1px solid rgba(244,121,32,0.1);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: 2px;
+}
+
 /* ── Sidebar headings ── */
 .sb-heading {
     font-family: 'Space Mono', monospace;
@@ -368,17 +414,34 @@ hr { border-color: rgba(255,255,255,0.06) !important; }
     color: var(--muted);
     text-transform: uppercase; letter-spacing: 2px;
     display: flex; align-items: center; gap: 8px;
-    margin: 6px 0 12px;
+    margin: 6px 0 10px;
 }
 .sb-heading .fi { color: var(--accent); font-size: 0.75rem; }
 .sb-info {
     font-family: 'Space Mono', monospace;
-    font-size: 0.66rem;
+    font-size: 0.64rem;
     color: var(--muted);
-    display: flex; flex-direction: column; gap: 7px;
+    display: flex; flex-direction: column; gap: 6px;
 }
 .sb-info-row { display: flex; align-items: center; gap: 8px; }
-.sb-info-row .fi { color: var(--accent); font-size: 0.66rem; flex-shrink: 0; }
+.sb-info-row .fi { color: var(--accent); font-size: 0.64rem; flex-shrink: 0; }
+
+/* ── Sidebar spacing tightening ── */
+section[data-testid="stSidebar"] .stElementContainer { margin-bottom: 2px !important; }
+section[data-testid="stSidebar"] [data-testid="stCheckbox"] p {
+    font-size: 0.8rem !important;
+    font-family: 'DM Sans', sans-serif !important;
+}
+/* Multiselect control in sidebar */
+section[data-testid="stSidebar"] [data-baseweb="select"] > div:first-child {
+    background: var(--surface2) !important;
+    border-color: rgba(244,121,32,0.2) !important;
+    border-radius: 8px !important;
+    transition: border-color 0.2s !important;
+}
+section[data-testid="stSidebar"] [data-baseweb="select"] > div:first-child:hover {
+    border-color: rgba(244,121,32,0.45) !important;
+}
 
 /* ── Discount bars ── */
 .disc-row {
@@ -497,11 +560,20 @@ a.prod-link:hover { text-decoration: none !important; }
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
+    st.markdown("""
+    <div class="sb-logo">
+        <div class="sb-logo-mark">A</div>
+        <div>
+            <div class="sb-logo-name">PRICE TRACKER</div>
+            <div class="sb-logo-sub">Alkosto · Live</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
     st.markdown('<div class="sb-heading"><i class="fi fi-tr-search"></i> Búsqueda</div>', unsafe_allow_html=True)
     query = st.text_input("Producto", value="", placeholder="celular, televisor, nevera...")
     max_pages = st.slider("Páginas", 1, 10, 3, help="~48 resultados por página")
     run_btn = st.button("Buscar ahora", use_container_width=True)
-    st.markdown("---")
+    st.markdown('<div class="sb-divider"></div>', unsafe_allow_html=True)
     st.markdown('<div class="sb-heading"><i class="fi fi-tr-sliders-v"></i> Filtros</div>', unsafe_allow_html=True)
 
 # ── Load data ─────────────────────────────────────────────────────────────────
@@ -528,13 +600,15 @@ with st.sidebar:
     marcas = sorted(df.marca.dropna().unique())
     marcas_sel = st.multiselect("Marca", options=marcas, default=[])
     solo_stock = st.checkbox("Solo en stock", value=False)
-    st.markdown("---")
+    st.markdown('<div class="sb-divider"></div>', unsafe_allow_html=True)
     ts = datetime.fromtimestamp(st.session_state.last_refresh).strftime("%H:%M:%S")
     st.markdown(f"""
-    <div class="sb-info">
-        <div class="sb-info-row"><i class="fi fi-tr-clock-twelve"></i> Última vez: <b style="color:#F47920">{ts}</b></div>
-        <div class="sb-info-row"><i class="fi fi-tr-arrows-repeat"></i> Búsquedas: <b style="color:#F47920">{st.session_state.refresh_count}</b></div>
-        <div class="sb-info-row"><i class="fi fi-tr-signal-stream"></i> Fuente: <b style="color:rgba(220,225,242,0.35)">Algolia API</b></div>
+    <div class="sb-status-card">
+        <div class="sb-info">
+            <div class="sb-info-row"><i class="fi fi-tr-clock-twelve"></i> Última vez: <b style="color:#F47920">{ts}</b></div>
+            <div class="sb-info-row"><i class="fi fi-tr-arrows-repeat"></i> Búsquedas: <b style="color:#F47920">{st.session_state.refresh_count}</b></div>
+            <div class="sb-info-row"><i class="fi fi-tr-signal-stream"></i> Fuente: <b style="color:rgba(220,225,242,0.35)">Algolia API</b></div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
