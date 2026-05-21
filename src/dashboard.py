@@ -689,7 +689,7 @@ st.markdown(f"""
         <div class="kpi-sub">Mejor oferta</div>
     </div>
     <div class="kpi-card c-red" style="animation-delay:0.2s">
-        <div class="kpi-icon"><i class="fi fi-tr-fire"></i></div>
+        <div class="kpi-icon"><i class="fi fi-tr-percentage"></i></div>
         <div class="kpi-label">Mayor descuento</div>
         <div class="kpi-value">{max_disc}%</div>
         <div class="kpi-sub">vs precio original</div>
@@ -748,7 +748,7 @@ with col2:
 top_disc = filtered[filtered.desc_pct > 0].nlargest(10, "desc_pct")
 if not top_disc.empty:
     max_d = top_disc.desc_pct.max()
-    st.markdown(f"""<div class="sec"><span class="sec-title"><i class="fi fi-tr-fire"></i> Top descuentos activos</span><div class="sec-line"></div><span class="sec-count">{len(top_disc)} productos</span></div>""", unsafe_allow_html=True)
+    st.markdown(f"""<div class="sec"><span class="sec-title"><i class="fi fi-tr-percentage"></i> Top descuentos activos</span><div class="sec-line"></div><span class="sec-count">{len(top_disc)} productos</span></div>""", unsafe_allow_html=True)
     for _, r in top_disc.iterrows():
         name = _html.escape(str(r["nombre"])[:65] + ("…" if len(str(r["nombre"])) > 65 else ""))
         w = int((r.desc_pct / max_d) * 100)
