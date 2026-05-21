@@ -27,8 +27,10 @@ if "refresh_count" not in st.session_state:
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://cdn-uicons.flaticon.com/uicons-thin-rounded/css/uicons-thin-rounded.css');
 
 html, body, [class*="css"] { font-family: 'Inter', sans-serif !important; }
+.fi { display: inline-block; line-height: 1; vertical-align: middle; flex-shrink: 0; }
 
 .stApp { background: #050505 !important; }
 
@@ -212,7 +214,13 @@ hr { border-color: rgba(244,121,32,0.15) !important; }
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, #F47920, transparent);
 }
-.kpi-icon { font-size: 1.5rem; margin-bottom: 8px; }
+.kpi-icon { font-size: 1.6rem; color: #F47920; margin-bottom: 10px; }
+.sec-title .fi { font-size: 0.85rem; color: #F47920; margin-right: 5px; vertical-align: middle; }
+.sb-heading { font-size: 0.78rem; font-weight: 700; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 7px; margin: 4px 0 10px; }
+.sb-heading .fi { color: #F47920; font-size: 0.85rem; }
+.sb-info { font-size: 0.75rem; color: rgba(255,255,255,0.3); line-height: 2.2; display: flex; flex-direction: column; gap: 2px; }
+.sb-info-row { display: flex; align-items: center; gap: 7px; }
+.sb-info-row .fi { color: #F47920; font-size: 0.78rem; flex-shrink: 0; }
 .kpi-label { font-size: 0.68rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; margin-bottom: 4px; }
 .kpi-value { font-size: 1.7rem; font-weight: 800; color: #f9fafb; letter-spacing: -0.5px; }
 .kpi-sub { font-size: 0.72rem; color: rgba(255,255,255,0.25); margin-top: 4px; }
@@ -272,15 +280,15 @@ a.prod-link:hover { text-decoration: none !important; }
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("### 🔎 Búsqueda")
+    st.markdown('<div class="sb-heading"><i class="fi fi-tr-search"></i> Búsqueda</div>', unsafe_allow_html=True)
     query = st.text_input("Producto", value="", placeholder="celular, televisor, nevera...")
     max_pages = st.slider("Páginas", 1, 10, 3, help="~48 resultados por página")
-    run_btn = st.button("⚡ Buscar ahora", use_container_width=True)
+    run_btn = st.button("Buscar ahora", use_container_width=True)
     st.markdown("---")
-    st.markdown("### 🎛️ Filtros")
+    st.markdown('<div class="sb-heading"><i class="fi fi-tr-sliders-v"></i> Filtros</div>', unsafe_allow_html=True)
 
 # ── Load data ─────────────────────────────────────────────────────────────────
-@st.cache_data(show_spinner="⚡ Consultando Alkosto...")
+@st.cache_data(show_spinner="Consultando Alkosto...")
 def load_data(q: str, pages: int) -> pd.DataFrame:
     return pd.DataFrame(scrape(query=q, max_pages=pages))
 
@@ -292,7 +300,7 @@ if run_btn:
 df = load_data(query, max_pages)
 
 if df.empty:
-    st.error("❌ No se encontraron productos. Intenta con otro término.")
+    st.error("No se encontraron productos. Intenta con otro término.")
     st.stop()
 
 # ── Sidebar filters ───────────────────────────────────────────────────────────
@@ -306,10 +314,10 @@ with st.sidebar:
     st.markdown("---")
     ts = datetime.fromtimestamp(st.session_state.last_refresh).strftime("%H:%M:%S")
     st.markdown(f"""
-    <div style="font-size:0.75rem;color:rgba(255,255,255,0.3);line-height:2">
-        🕒 Última vez: <b style="color:#F47920">{ts}</b><br>
-        🔄 Búsquedas: <b style="color:#F47920">{st.session_state.refresh_count}</b><br>
-        📡 Fuente: <b style="color:rgba(255,255,255,0.4)">Algolia API</b>
+    <div class="sb-info">
+        <div class="sb-info-row"><i class="fi fi-tr-clock-twelve"></i> Última vez: <b style="color:#F47920">{ts}</b></div>
+        <div class="sb-info-row"><i class="fi fi-tr-arrows-repeat"></i> Búsquedas: <b style="color:#F47920">{st.session_state.refresh_count}</b></div>
+        <div class="sb-info-row"><i class="fi fi-tr-signal-stream"></i> Fuente: <b style="color:rgba(255,255,255,0.4)">Algolia API</b></div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -326,7 +334,7 @@ if search_name:
     filtered = filtered[filtered.nombre.str.contains(search_name, case=False, na=False)]
 
 if filtered.empty:
-    st.warning("⚠️ Ningún producto coincide con los filtros.")
+    st.warning("Ningún producto coincide con los filtros.")
     st.stop()
 
 def parse_disc(d):
@@ -350,7 +358,7 @@ st.markdown(f"""
     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px">
         <div>
             <div class="hero-title">Alkosto Price Tracker</div>
-            <div class="hero-sub">Monitoreo de precios en tiempo real · Alkosto Colombia 🇨🇴</div>
+            <div class="hero-sub">Monitoreo de precios en tiempo real · Alkosto Colombia</div>
             <div class="hero-stats">
                 <div class="hero-stat"><span class="hero-stat-val">{total}</span><span class="hero-stat-lbl">Productos</span></div>
                 <div class="hero-stat"><span class="hero-stat-val">{in_stock}</span><span class="hero-stat-lbl">En stock</span></div>
@@ -370,25 +378,25 @@ st.markdown(f"""
 st.markdown(f"""
 <div class="kpi-grid">
     <div class="kpi-card" style="animation-delay:0.05s">
-        <div class="kpi-icon">📦</div>
+        <div class="kpi-icon"><i class="fi fi-tr-box-open"></i></div>
         <div class="kpi-label">Total productos</div>
         <div class="kpi-value">{total:,}</div>
         <div class="kpi-sub">"{query}"</div>
     </div>
     <div class="kpi-card" style="animation-delay:0.1s">
-        <div class="kpi-icon">💰</div>
+        <div class="kpi-icon"><i class="fi fi-tr-coins"></i></div>
         <div class="kpi-label">Precio promedio</div>
         <div class="kpi-value">${avg_p:,.0f}</div>
         <div class="kpi-sub">COP</div>
     </div>
     <div class="kpi-card" style="animation-delay:0.15s">
-        <div class="kpi-icon">⚡</div>
+        <div class="kpi-icon"><i class="fi fi-tr-bolt"></i></div>
         <div class="kpi-label">Precio mínimo</div>
         <div class="kpi-value">${min_p:,.0f}</div>
         <div class="kpi-sub">Mejor oferta</div>
     </div>
     <div class="kpi-card" style="animation-delay:0.2s">
-        <div class="kpi-icon">🔥</div>
+        <div class="kpi-icon"><i class="fi fi-tr-fire"></i></div>
         <div class="kpi-label">Mayor descuento</div>
         <div class="kpi-value">{max_disc}%</div>
         <div class="kpi-sub">vs precio original</div>
@@ -397,7 +405,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ── Charts ────────────────────────────────────────────────────────────────────
-st.markdown("""<div class="sec"><span class="sec-title">📉 Análisis de precios</span><div class="sec-line"></div></div>""", unsafe_allow_html=True)
+st.markdown("""<div class="sec"><span class="sec-title"><i class="fi fi-tr-chart-line-up"></i> Análisis de precios</span><div class="sec-line"></div></div>""", unsafe_allow_html=True)
 
 BG, GRID, FONT = "rgba(0,0,0,0)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0.4)"
 FONT_T = "rgba(255,255,255,0.85)"
@@ -445,7 +453,7 @@ with col2:
 top_disc = filtered[filtered.desc_pct > 0].nlargest(10, "desc_pct")
 if not top_disc.empty:
     max_d = top_disc.desc_pct.max()
-    st.markdown(f"""<div class="sec"><span class="sec-title">🔥 Top descuentos activos</span><div class="sec-line"></div><span class="sec-count">{len(top_disc)} productos</span></div>""", unsafe_allow_html=True)
+    st.markdown(f"""<div class="sec"><span class="sec-title"><i class="fi fi-tr-fire"></i> Top descuentos activos</span><div class="sec-line"></div><span class="sec-count">{len(top_disc)} productos</span></div>""", unsafe_allow_html=True)
     for _, r in top_disc.iterrows():
         name = _html.escape(str(r["nombre"])[:65] + ("…" if len(str(r["nombre"])) > 65 else ""))
         w = int((r.desc_pct / max_d) * 100)
@@ -457,7 +465,7 @@ if not top_disc.empty:
         </div>""", unsafe_allow_html=True)
 
 # ── Product Cards ─────────────────────────────────────────────────────────────
-st.markdown("""<div class="sec" style="margin-top:28px"><span class="sec-title">⭐ Mejores ofertas</span><div class="sec-line"></div></div>""", unsafe_allow_html=True)
+st.markdown("""<div class="sec" style="margin-top:28px"><span class="sec-title"><i class="fi fi-tr-star"></i> Mejores ofertas</span><div class="sec-line"></div></div>""", unsafe_allow_html=True)
 
 highlights = filtered[filtered.desc_pct > 0].nlargest(6, "desc_pct") if (filtered.desc_pct > 0).any() else filtered.nsmallest(6, "precio_cop")
 rows_list = list(highlights.iterrows())
@@ -487,22 +495,22 @@ for row_start in range(0, len(rows_list), 3):
                 {rat_h}
             </div></a>""", unsafe_allow_html=True)
 # ── Table ─────────────────────────────────────────────────────────────────────
-st.markdown(f"""<div class="sec" style="margin-top:28px"><span class="sec-title">🗂️ Catálogo completo</span><div class="sec-line"></div><span class="sec-count">{total} resultados</span></div>""", unsafe_allow_html=True)
+st.markdown(f"""<div class="sec" style="margin-top:28px"><span class="sec-title"><i class="fi fi-tr-rectangle-list"></i> Catálogo completo</span><div class="sec-line"></div><span class="sec-count">{total} resultados</span></div>""", unsafe_allow_html=True)
 
 disp = filtered[["nombre","marca","precio_cop","precio_original_cop","descuento","rating","disponibilidad"]].copy()
 disp["precio_cop"] = disp["precio_cop"].apply(lambda x: f"${x:,.0f}")
 disp["precio_original_cop"] = disp["precio_original_cop"].apply(lambda x: f"${x:,.0f}" if pd.notna(x) and x else "—")
-disp["rating"] = disp["rating"].apply(lambda x: f"⭐ {x:.1f}" if x and x > 0 else "—")
-disp["disponibilidad"] = disp["disponibilidad"].apply(lambda x: "✅ En stock" if x == "En stock" else "❌ Sin stock")
+disp["rating"] = disp["rating"].apply(lambda x: f"{x:.1f}" if x and x > 0 else "—")
+disp["disponibilidad"] = disp["disponibilidad"].apply(lambda x: "En stock" if x == "En stock" else "Sin stock")
 disp.columns = ["Producto","Marca","Precio","Precio antes","Descuento","Rating","Stock"]
 st.dataframe(disp, use_container_width=True, hide_index=True,
     column_config={"Producto": st.column_config.TextColumn(width="large")})
 
 # ── Downloads ─────────────────────────────────────────────────────────────────
-st.markdown("""<div class="sec" style="margin-top:20px"><span class="sec-title">⬇️ Exportar</span><div class="sec-line"></div></div>""", unsafe_allow_html=True)
+st.markdown("""<div class="sec" style="margin-top:20px"><span class="sec-title"><i class="fi fi-tr-file-export"></i> Exportar</span><div class="sec-line"></div></div>""", unsafe_allow_html=True)
 d1, d2 = st.columns(2)
 with d1:
-    st.download_button("⬇️ CSV", data=filtered.to_csv(index=False).encode("utf-8-sig"),
+    st.download_button("Descargar CSV", data=filtered.to_csv(index=False).encode("utf-8-sig"),
         file_name=f"alkosto_{query}.csv", mime="text/csv", use_container_width=True)
 with d2:
     buf = io.BytesIO()
@@ -510,9 +518,9 @@ with d2:
         filtered.to_excel(w, index=False, sheet_name="Productos")
         for col in w.sheets["Productos"].columns:
             w.sheets["Productos"].column_dimensions[col[0].column_letter].width = max(len(str(c.value or "")) for c in col) + 4
-    st.download_button("⬇️ Excel", data=buf.getvalue(),
+    st.download_button("Descargar Excel", data=buf.getvalue(),
         file_name=f"alkosto_{query}.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         use_container_width=True)
 
-st.markdown("""<div class="footer">Alkosto Price Tracker &nbsp;·&nbsp; <b>Algolia API</b> &nbsp;·&nbsp; 🇨🇴 Colombia</div>""", unsafe_allow_html=True)
+st.markdown("""<div class="footer">Alkosto Price Tracker &nbsp;·&nbsp; <b>Algolia API</b> &nbsp;·&nbsp; Colombia</div>""", unsafe_allow_html=True)
